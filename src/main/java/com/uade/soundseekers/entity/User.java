@@ -41,10 +41,10 @@ public class User implements UserDetails {
 
     private String password;
 
-    private String firstName;
 
     @Column(nullable = false, unique = true)
     private String lastName;
+
 
     @Enumerated(EnumType.STRING)
     private Role role;
