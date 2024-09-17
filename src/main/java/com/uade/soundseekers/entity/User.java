@@ -45,6 +45,11 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String lastName;
 
+    private String username;
+
+    private int edad;
+
+
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -54,10 +59,7 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
+    
 
     @Override
     public boolean isAccountNonExpired() {

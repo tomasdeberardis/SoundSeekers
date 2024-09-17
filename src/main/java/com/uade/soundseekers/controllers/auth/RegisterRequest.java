@@ -22,10 +22,17 @@ public class RegisterRequest {
     private String email;
 
     @NotBlank(message = "Name is mandatory")
+    private String username;
+
+    
+    @NotBlank(message = "Name is mandatory")
     private String name;
 
     @NotBlank(message = "Lastname is mandatory")
     private String lastname;
+
+    @NotBlank(message = "Name is mandatory")
+    private int edad;
 
     @NotBlank(message = "Password is mandatory")
     private String password;
