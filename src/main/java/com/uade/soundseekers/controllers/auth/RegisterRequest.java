@@ -2,7 +2,7 @@ package com.uade.soundseekers.controllers.auth;
 
 import com.uade.soundseekers.entity.Role;
 
-import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,20 +18,18 @@ import lombok.NoArgsConstructor;
 public class RegisterRequest {
 
     @NotBlank(message = "Email is mandatory")
-    @Email(message = "Invalid email format")
     private String email;
 
     @NotBlank(message = "Name is mandatory")
     private String username;
-
-    
+        
     @NotBlank(message = "Name is mandatory")
     private String name;
 
     @NotBlank(message = "Lastname is mandatory")
     private String lastname;
 
-    @NotBlank(message = "Name is mandatory")
+    @Min(value = 0, message = "Edad must be a positive number")
     private int edad;
 
     @NotBlank(message = "Password is mandatory")
