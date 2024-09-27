@@ -22,12 +22,12 @@ public class RegisterRequest {
 
     @NotBlank(message = "Name is mandatory")
     private String username;
-        
+
     @NotBlank(message = "Name is mandatory")
     private String name;
 
     @NotBlank(message = "Lastname is mandatory")
-    private String lastname;
+    private String lastName;
 
     @Min(value = 0, message = "Edad must be a positive number")
     private int edad;
