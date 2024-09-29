@@ -1,6 +1,10 @@
 package com.uade.soundseekers.controllers.auth;
 
+
 import com.uade.soundseekers.entity.Role;
+
+import com.uade.soundseekers.entity.GeneroMusical;
+
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.Set;
+
 
 
 
@@ -36,4 +42,6 @@ public class RegisterRequest {
     private String password;
 
     private Role role;
+    private Set<GeneroMusical> generosMusicalesPreferidos;
 }
+

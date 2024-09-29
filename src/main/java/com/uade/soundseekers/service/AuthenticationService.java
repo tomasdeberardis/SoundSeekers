@@ -12,6 +12,8 @@ import com.uade.soundseekers.controllers.config.JwtService;
 import com.uade.soundseekers.entity.User;
 import com.uade.soundseekers.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import java.util.Set;
+
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
+                .generosMusicalesPreferidos(request.getGenerosMusicalesPreferidos())
                 .build();
 
         repository.save(user);
