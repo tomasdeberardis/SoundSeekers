@@ -59,7 +59,13 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -81,4 +87,3 @@ public class User implements UserDetails {
         return true;
     }
 }
-

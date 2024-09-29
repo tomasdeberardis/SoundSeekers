@@ -30,20 +30,23 @@ public class AuthenticationService {
         }
 
         var user = User.builder()
-            .name(request.getName())
-            .username(request.getUsername())
-            .edad(request.getEdad())
-            .lastName(request.getLastname())
-            .email(request.getEmail())
-            .password(passwordEncoder.encode(request.getPassword()))
-            .role(request.getRole())
-            .build();
+                .name(request.getName())
+                .username(request.getUsername())
+                .edad(request.getEdad())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())
+                .build();
 
         repository.save(user);
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
-            .accessToken(jwtToken)
-            .build();
+                .accessToken(jwtToken)
+                .role(user.getRole().name())
+                .build();
+
+
     }
 
     private boolean isValidEmail(String email) {
@@ -62,7 +65,7 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
+                .role(user.getRole().name())
                 .build();
     }
 }
-
