@@ -1,33 +1,21 @@
 package com.uade.soundseekers.controllers.auth;
 
-import com.uade.soundseekers.entity.User;
-import com.uade.soundseekers.entity.VerificationToken;
-import com.uade.soundseekers.repository.UserRepository;
-import com.uade.soundseekers.repository.VerificationTokenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import com.uade.soundseekers.service.VerificationService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class VerificationController {
 
-    @Autowired
-    private VerificationTokenRepository tokenRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final VerificationService verificationService;
 
     @PostMapping("/verify")
     public String verifyEmail(@RequestParam("token") String token) {
-        VerificationToken verificationToken = tokenRepository.findByToken(token);
-        if (verificationToken == null) {
-            return "Invalid token";
-        }
-
-        User user = verificationToken.getUser();
-        user.setEmailVerified(true);
-        userRepository.save(user);
-
-        return "Email verified successfully";
+        return verificationService.verifyEmail(token);
     }
 }
