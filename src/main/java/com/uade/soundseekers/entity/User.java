@@ -47,6 +47,8 @@ public class User implements UserDetails {
 
     private int edad;
 
+    private boolean isEmailVerified;
+
     @Setter
     @Getter
     @Enumerated(EnumType.STRING)
