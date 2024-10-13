@@ -2,6 +2,7 @@ package com.uade.soundseekers.repository;
 
 import com.uade.soundseekers.entity.Event;
 import com.uade.soundseekers.entity.EventDAO;
+import com.uade.soundseekers.entity.musicGenre;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
@@ -47,25 +48,57 @@ public class EventDAOImpl implements EventDAO {
         }
     }
 
-    @Override
-    public List<Event> findByAdvancedFilters(String name, String genre, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
-        StringBuilder queryStr = new StringBuilder("SELECT e FROM Event e WHERE 1=1");
+    public List<Event> findByAdvancedFilters(String name,List<musicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
+        StringBuilder queryBuilder = new StringBuilder("SELECT e FROM Event e WHERE 1=1 ");
 
-        if (name != null && !name.isEmpty()) queryStr.append(" AND e.name LIKE :name");
-        if (genre != null && !genre.isEmpty()) queryStr.append(" AND :genre MEMBER OF e.genres");
-        if (startDate != null) queryStr.append(" AND e.dateTime >= :startDate");
-        if (endDate != null) queryStr.append(" AND e.dateTime <= :endDate");
-        if (minPrice != null) queryStr.append(" AND e.price >= :minPrice");
-        if (maxPrice != null) queryStr.append(" AND e.price <= :maxPrice");
+        if (name != null) {
+            queryBuilder.append("AND e.name LIKE :name ");
+        }
+        if (startDate != null) {
+            queryBuilder.append("AND e.dateTime >= :startDate ");
+        }
+        if (endDate != null) {
+            queryBuilder.append("AND e.dateTime <= :endDate ");
+        }
+        if (minPrice != null) {
+            queryBuilder.append("AND e.price >= :minPrice ");
+        }
+        if (maxPrice != null) {
+            queryBuilder.append("AND e.price <= :maxPrice ");
+        }
+        if (genres != null && !genres.isEmpty()) {
+            queryBuilder.append("AND (");
+            for (int i = 0; i < genres.size(); i++) {
+                queryBuilder.append(":genre").append(i).append(" MEMBER OF e.genres");
+                if (i < genres.size() - 1) {
+                    queryBuilder.append(" OR ");
+                }
+            }
+            queryBuilder.append(") ");
+        }
 
-        TypedQuery<Event> query = entityManager.createQuery(queryStr.toString(), Event.class);
+        TypedQuery<Event> query = entityManager.createQuery(queryBuilder.toString(), Event.class);
 
-        if (name != null && !name.isEmpty()) query.setParameter("name", "%" + name + "%");
-        if (genre != null && !genre.isEmpty()) query.setParameter("genre", genre);
-        if (startDate != null) query.setParameter("startDate", startDate);
-        if (endDate != null) query.setParameter("endDate", endDate);
-        if (minPrice != null) query.setParameter("minPrice", minPrice);
-        if (maxPrice != null) query.setParameter("maxPrice", maxPrice);
+        if (name != null) {
+            query.setParameter("name", "%" + name + "%");
+        }
+        if (startDate != null) {
+            query.setParameter("startDate", startDate);
+        }
+        if (endDate != null) {
+            query.setParameter("endDate", endDate);
+        }
+        if (minPrice != null) {
+            query.setParameter("minPrice", minPrice);
+        }
+        if (maxPrice != null) {
+            query.setParameter("maxPrice", maxPrice);
+        }
+        if (genres != null && !genres.isEmpty()) {
+            for (int i = 0; i < genres.size(); i++) {
+                query.setParameter("genre" + i, genres.get(i));
+            }
+        }
 
         return query.getResultList();
     }

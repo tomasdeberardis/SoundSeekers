@@ -62,6 +62,8 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private List<musicGenre> genres = new ArrayList<>();
 
+    @Setter
+    @Getter
     @ManyToOne
     private User organizer;
 }

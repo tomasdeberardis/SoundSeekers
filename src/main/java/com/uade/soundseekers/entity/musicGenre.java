@@ -27,5 +27,5 @@ public enum musicGenre {
     FOLKLORE_MODERNO,
     ALTERNATIVE,
     PUNK_ROCK,
-    GRUNGE
+    CLASICO, GRUNGE
 }

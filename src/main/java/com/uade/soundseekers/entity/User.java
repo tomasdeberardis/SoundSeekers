@@ -33,9 +33,10 @@ public class User implements UserDetails {
     private String password;
 
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String lastName;
 
+    @Column(nullable = false, unique = true)
     private String username;
 
     private int edad;
