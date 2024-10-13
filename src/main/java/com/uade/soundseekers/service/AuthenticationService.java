@@ -24,6 +24,7 @@ public class AuthenticationService {
 
     private static final String EMAIL_REGEX = "^(?!.*\\.\\..)(?!.*\\.$)(?!^\\.)[A-Za-z0-9][A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$"; //restricciones del mail
 
+
     public AuthenticationResponse register(RegisterRequest request) {
         // Validar el email utilizando una expresión regular más estricta
         if (!isValidEmail(request.getEmail())) {
