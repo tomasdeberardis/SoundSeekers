@@ -1,4 +1,4 @@
-package com.uade.soundseekers.controllers.dto;
+package com.uade.soundseekers.dto;
 
 public record ExceptionDto(String message) {
 }

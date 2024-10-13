@@ -1,6 +1,6 @@
 package com.uade.soundseekers.exception;
 
-import com.uade.soundseekers.controllers.dto.ExceptionDto;
+import com.uade.soundseekers.dto.ExceptionDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
