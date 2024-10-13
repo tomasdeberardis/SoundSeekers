@@ -1,6 +1,7 @@
 package com.uade.soundseekers.controllers.auth;
 
 import com.uade.soundseekers.entity.Role;
+import com.uade.soundseekers.entity.GeneroMusical;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+import java.util.Set;
 
 @Data
 @Builder
@@ -22,12 +23,12 @@ public class RegisterRequest {
 
     @NotBlank(message = "Name is mandatory")
     private String username;
-        
+
     @NotBlank(message = "Name is mandatory")
     private String name;
 
     @NotBlank(message = "Lastname is mandatory")
-    private String lastname;
+    private String lastName;
 
     @Min(value = 0, message = "Edad must be a positive number")
     private int edad;
@@ -36,4 +37,6 @@ public class RegisterRequest {
     private String password;
 
     private Role role;
+    private Set<GeneroMusical> generosMusicalesPreferidos;
 }
+
