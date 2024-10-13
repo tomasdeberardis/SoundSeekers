@@ -1,0 +1,31 @@
+package com.uade.soundseekers.entity;
+
+public enum musicGenre {
+    ROCK,
+    POP,
+    JAZZ,
+    FOLKLORE,
+    TANGO,
+    CUMBIA,
+    REGGAETON,
+    TRAP,
+    ELECTRONICA,
+    CUARTETO,
+    HEAVY_METAL,
+    PUNK,
+    BLUES,
+    INDIE,
+    SKA,
+    SALSA,
+    LATIN_JAZZ,
+    BOSSA_NOVA,
+    RUMBA,
+    HIP_HOP,
+    RB,
+    REGGAE,
+    FUSION,
+    FOLKLORE_MODERNO,
+    ALTERNATIVE,
+    PUNK_ROCK,
+    GRUNGE
+}

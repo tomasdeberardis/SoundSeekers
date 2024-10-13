@@ -1,8 +1,11 @@
 package com.uade.soundseekers.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import com.uade.soundseekers.entity.Event;
+import com.uade.soundseekers.entity.musicGenre;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,21 +13,24 @@ import java.util.List;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    // Buscar eventos por ubicación y género musical
-    List<Event> findByLocationAndGenre(String location, String genre);
+    // Filtros avanzados para buscar eventos
+    @Query("SELECT e FROM Event e WHERE "
+            + "(:name IS NULL OR e.name LIKE %:name%) AND "
+            + "(:genre IS NULL OR e.genre = :genre) AND "
+            + "(:startDate IS NULL OR e.dateTime >= :startDate) AND "
+            + "(:endDate IS NULL OR e.dateTime <= :endDate) AND "
+            + "(:minPrice IS NULL OR e.price >= :minPrice) AND "
+            + "(:maxPrice IS NULL OR e.price <= :maxPrice)")
+    List<Event> findByAdvancedFilters(@Param("name") String name,
+                                      @Param("genre") String genre,
+                                      @Param("startDate") LocalDateTime startDate,
+                                      @Param("endDate") LocalDateTime endDate,
+                                      @Param("minPrice") Double minPrice,
+                                      @Param("maxPrice") Double maxPrice);
 
-    // Buscar eventos por rango de fechas
-    List<Event> findByDateTimeBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
-
-    // Buscar eventos organizados por un usuario
-    List<Event> findByOrganizerId(Long organizerId);
-
-    // Buscar eventos por precio máximo
-    List<Event> findByPriceLessThanEqual(Double price);
-
-    // Buscar eventos por género y rango de fechas
-    List<Event> findByGenreAndDateTimeBetween(String genre, LocalDateTime startDateTime, LocalDateTime endDateTime);
-
-    // Buscar eventos por ubicación, género y rango de fechas
-    List<Event> findByLocationAndGenreAndDateTimeBetween(String location, String genre, LocalDateTime startDateTime, LocalDateTime endDateTime);
+    // Búsqueda de eventos por proximidad
+    @Query("SELECT e FROM Event e WHERE "
+            + "(6371 * acos(cos(radians(:lat)) * cos(radians(e.latitude)) "
+            + "* cos(radians(e.longitude) - radians(:lng)) + sin(radians(:lat)) * sin(radians(e.latitude)))) <= :radius")
+    List<Event> findByProximity(@Param("lat") Double lat, @Param("lng") Double lng, @Param("radius") Double radius);
 }

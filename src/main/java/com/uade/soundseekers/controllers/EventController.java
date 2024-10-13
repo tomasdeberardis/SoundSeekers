@@ -1,14 +1,14 @@
 package com.uade.soundseekers.controllers;
+
+import com.uade.soundseekers.entity.Event;
+import com.uade.soundseekers.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.uade.soundseekers.entity.Event;
-import com.uade.soundseekers.service.EventService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/events")
@@ -19,35 +19,22 @@ public class EventController {
 
     // Obtener todos los eventos
     @GetMapping
-    public ResponseEntity<List<Event>> getAllEvents() {
-        List<Event> events = eventService.getAllEvents();
-        return new ResponseEntity<>(events, HttpStatus.OK);
-    }
-
-    // Obtener un evento por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Event> getEventById(@PathVariable Long id) {
-        Optional<Event> event = eventService.getEventById(id);
-        return event.map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public List<Event> getAllEvents() {
+        return eventService.getAllEvents();
     }
 
     // Crear un nuevo evento
     @PostMapping
     public ResponseEntity<Event> createEvent(@RequestBody Event event) {
-        Event newEvent = eventService.saveEvent(event);
-        return new ResponseEntity<>(newEvent, HttpStatus.CREATED);
+        Event createdEvent = eventService.createEvent(event);
+        return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
     }
 
-    // Actualizar un evento existente
+    // Editar un evento existente
     @PutMapping("/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event eventDetails) {
-        try {
-            Event updatedEvent = eventService.updateEvent(id, eventDetails);
-            return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Event updatedEvent = eventService.updateEvent(id, eventDetails);
+        return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
     }
 
     // Eliminar un evento
@@ -57,38 +44,26 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // Buscar eventos por ubicación y género
+    // Búsqueda de eventos por filtros avanzados
     @GetMapping("/search")
-    public ResponseEntity<List<Event>> getEventsByLocationAndGenre(@RequestParam String location, @RequestParam String genre) {
-        List<Event> events = eventService.getEventsByLocationAndGenre(location, genre);
-        return new ResponseEntity<>(events, HttpStatus.OK);
+    public List<Event> findByAdvancedFilters(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false) LocalDateTime startDate,
+            @RequestParam(required = false) LocalDateTime endDate,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice
+    ) {
+        return eventService.findByAdvancedFilters(name, genre, startDate, endDate, minPrice, maxPrice);
     }
 
-    // Buscar eventos por rango de fechas
-    @GetMapping("/date-range")
-    public ResponseEntity<List<Event>> getEventsByDateRange(@RequestParam LocalDateTime startDateTime, @RequestParam LocalDateTime endDateTime) {
-        List<Event> events = eventService.getEventsByDateRange(startDateTime, endDateTime);
-        return new ResponseEntity<>(events, HttpStatus.OK);
-    }
-
-    // Buscar eventos por precio máximo
-    @GetMapping("/price")
-    public ResponseEntity<List<Event>> getEventsByPrice(@RequestParam Double price) {
-        List<Event> events = eventService.getEventsByPriceLessThanEqual(price);
-        return new ResponseEntity<>(events, HttpStatus.OK);
-    }
-
-    // Buscar eventos por género y rango de fechas
-    @GetMapping("/genre-date-range")
-    public ResponseEntity<List<Event>> getEventsByGenreAndDateRange(@RequestParam String genre, @RequestParam LocalDateTime startDateTime, @RequestParam LocalDateTime endDateTime) {
-        List<Event> events = eventService.getEventsByGenreAndDateRange(genre, startDateTime, endDateTime);
-        return new ResponseEntity<>(events, HttpStatus.OK);
-    }
-
-    // Buscar eventos por ubicación, género y rango de fechas
-    @GetMapping("/search-advanced")
-    public ResponseEntity<List<Event>> getEventsByLocationAndGenreAndDateRange(@RequestParam String location, @RequestParam String genre, @RequestParam LocalDateTime startDateTime, @RequestParam LocalDateTime endDateTime) {
-        List<Event> events = eventService.getEventsByLocationAndGenreAndDateRange(location, genre, startDateTime, endDateTime);
-        return new ResponseEntity<>(events, HttpStatus.OK);
+    // Búsqueda de eventos por proximidad (latitud, longitud, radio)
+    @GetMapping("/proximity")
+    public List<Event> searchEventsByProximity(
+            @RequestParam Double lat,
+            @RequestParam Double lng,
+            @RequestParam Double radius
+    ) {
+        return eventService.searchEventsByProximity(lat, lng, radius);
     }
 }

@@ -28,11 +28,11 @@ public class Event {
 
     @Setter
     @Getter
-    private String location;
+    private Double latitude;
 
     @Setter
     @Getter
-    private String genre;
+    private Double longitude;
 
     @Setter
     @Getter
@@ -44,11 +44,24 @@ public class Event {
 
     @Setter
     @Getter
-    @OneToMany(mappedBy="event", cascade = CascadeType.ALL)
-    private List<Image> images = new ArrayList<Image>();
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
+
+    @Setter
+    @Getter
+    @ManyToMany
+    @JoinTable(
+            name = "event_users",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> attendees = new ArrayList<>();
+
+    @Setter
+    @Getter
+    @ElementCollection(targetClass = musicGenre.class)
+    @Enumerated(EnumType.STRING)
+    private List<musicGenre> genres = new ArrayList<>();
 
     @ManyToOne
     private User organizer;
-
-
 }

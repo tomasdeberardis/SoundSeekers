@@ -1,84 +1,65 @@
 package com.uade.soundseekers.service;
+
+import com.uade.soundseekers.entity.Event;
+import com.uade.soundseekers.entity.EventDAO;
+import com.uade.soundseekers.repository.EventRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.uade.soundseekers.entity.Event;
-import com.uade.soundseekers.repository.EventRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EventService {
 
     @Autowired
-    private EventRepository eventRepository;
+    private EventDAO eventDAO;
 
     // Obtener todos los eventos
     public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+        return eventDAO.findAll();
     }
 
-    // Obtener evento por ID
-    public Optional<Event> getEventById(Long id) {
-        return eventRepository.findById(id);
+    // Crear un nuevo evento
+    public Event createEvent(Event event) {
+        eventDAO.save(event);
+        return event;
     }
 
-    // Guardar un evento
-    public Event saveEvent(Event event) {
-        return eventRepository.save(event);
-    }
-
-    // Actualizar un evento
+    // Editar un evento existente
     public Event updateEvent(Long id, Event eventDetails) {
-        Optional<Event> optionalEvent = eventRepository.findById(id);
-
-        if (optionalEvent.isPresent()) {
-            Event event = optionalEvent.get();
-            event.setName(eventDetails.getName());
-            event.setDescription(eventDetails.getDescription());
-            event.setLocation(eventDetails.getLocation());
-            event.setGenre(eventDetails.getGenre());
-            event.setDateTime(eventDetails.getDateTime());
-            event.setPrice(eventDetails.getPrice());
-            return eventRepository.save(event);
-        } else {
-            throw new RuntimeException("Evento no encontrado con el ID: " + id);
-        }
+        Event event = eventDAO.findById(id).orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+        event.setName(eventDetails.getName());
+        event.setDescription(eventDetails.getDescription());
+        event.setLatitude(eventDetails.getLatitude());
+        event.setLongitude(eventDetails.getLongitude());
+        event.setDateTime(eventDetails.getDateTime());
+        event.setPrice(eventDetails.getPrice());
+        event.setGenres(eventDetails.getGenres());
+        event.setAttendees(eventDetails.getAttendees());
+        eventDAO.update(event);
+        return event;
     }
 
-    // Eliminar un evento por ID
+    // Eliminar un evento
     public void deleteEvent(Long id) {
-        eventRepository.deleteById(id);
+        eventDAO.deleteById(id);
     }
 
-    // Buscar eventos por ubicación y género musical
-    public List<Event> getEventsByLocationAndGenre(String location, String genre) {
-        return eventRepository.findByLocationAndGenre(location, genre);
+    // Búsqueda de eventos por filtros avanzados
+    public List<Event> findByAdvancedFilters(String name, String genre, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
+        return eventDAO.findByAdvancedFilters(name, genre, startDate, endDate, minPrice, maxPrice);
     }
 
-    // Buscar eventos por rango de fechas
-    public List<Event> getEventsByDateRange(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        return eventRepository.findByDateTimeBetween(startDateTime, endDateTime);
-    }
-
-    // Buscar eventos organizados por un usuario específico
-    public List<Event> getEventsByOrganizer(Long organizerId) {
-        return eventRepository.findByOrganizerId(organizerId);
-    }
-
-    // Buscar eventos por precio máximo
-    public List<Event> getEventsByPriceLessThanEqual(Double price) {
-        return eventRepository.findByPriceLessThanEqual(price);
-    }
-
-    // Buscar eventos por género y rango de fechas
-    public List<Event> getEventsByGenreAndDateRange(String genre, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        return eventRepository.findByGenreAndDateTimeBetween(genre, startDateTime, endDateTime);
-    }
-
-    // Buscar eventos por ubicación, género y rango de fechas
-    public List<Event> getEventsByLocationAndGenreAndDateRange(String location, String genre, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        return eventRepository.findByLocationAndGenreAndDateTimeBetween(location, genre, startDateTime, endDateTime);
+    // Búsqueda de eventos por proximidad (latitud, longitud, radio)
+    public List<Event> searchEventsByProximity(Double lat, Double lng, Double radius) {
+        return eventDAO.findByProximity(lat, lng, radius);
     }
 }
