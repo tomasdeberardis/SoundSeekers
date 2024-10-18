@@ -1,19 +1,16 @@
 package com.uade.soundseekers.controllers.config;
 
-
-
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.function.Function;
-
-import javax.crypto.SecretKey;
-import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.function.Function;
 
 @Service
 public class JwtService {
@@ -23,21 +20,21 @@ public class JwtService {
     private long jwtExpiration;
 
     public String generateToken(
-            UserDetails userDetails) {
+        UserDetails userDetails) {
         return buildToken(userDetails, jwtExpiration);
     }
 
     private String buildToken(
-            UserDetails userDetails,
-            long expiration) {
+        UserDetails userDetails,
+        long expiration) {
         return Jwts
-                .builder()
-                .subject(userDetails.getUsername()) // prueba@hotmail.com
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .claim("horacio", 1234567)
-                .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSecretKey())
-                .compact();
+            .builder()
+            .subject(userDetails.getUsername()) // prueba@hotmail.com
+            .issuedAt(new Date(System.currentTimeMillis()))
+            .claim("horacio", 1234567)
+            .expiration(new Date(System.currentTimeMillis() + expiration))
+            .signWith(getSecretKey())
+            .compact();
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -60,16 +57,15 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts
-                .parser()
-                .verifyWith(getSecretKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+            .parser()
+            .verifyWith(getSecretKey())
+            .build()
+            .parseSignedClaims(token)
+            .getPayload();
     }
 
     private SecretKey getSecretKey() {
-        SecretKey secretKeySpec = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-        return secretKeySpec;
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 }
 

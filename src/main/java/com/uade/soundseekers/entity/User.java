@@ -11,10 +11,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -27,11 +37,13 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
     private String name;
 
     private String password;
+
 
 
     @Column(nullable = false)
@@ -42,18 +54,20 @@ public class User implements UserDetails {
 
     private int edad;
 
-
-    @Column(nullable = false)
+    @Setter
+    @Getter
     @Enumerated(EnumType.STRING)
     @JsonIgnore
     private Role role;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private Set<GeneroMusical> generosMusicalesPreferidos;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
-
-    
 
     @Override
     public boolean isAccountNonExpired() {
@@ -75,4 +89,3 @@ public class User implements UserDetails {
         return true;
     }
 }
-
