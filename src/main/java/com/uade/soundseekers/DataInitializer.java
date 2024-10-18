@@ -32,7 +32,7 @@ public class DataInitializer implements CommandLineRunner {
                 .email("juan.perez@gmail.com")
                 .password("password123")
                 .edad(25)
-                .role(Role.CLIENT)
+                .role(Role.ARTIST)
                 .build();
 
         User user2 = User.builder()

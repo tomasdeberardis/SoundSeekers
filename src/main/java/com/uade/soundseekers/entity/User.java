@@ -5,6 +5,7 @@ package com.uade.soundseekers.entity;
 import java.util.Collection;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -56,6 +57,7 @@ public class User implements UserDetails {
     @Setter
     @Getter
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private Role role;
 
     @ElementCollection(fetch = FetchType.EAGER)
