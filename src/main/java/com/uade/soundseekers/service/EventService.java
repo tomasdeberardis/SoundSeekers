@@ -21,7 +21,6 @@ public class EventService {
     @Autowired
     private UserService userService;
 
-
     // Obtener todos los eventos
     @Transactional
     public List<Event> getAllEvents() {
