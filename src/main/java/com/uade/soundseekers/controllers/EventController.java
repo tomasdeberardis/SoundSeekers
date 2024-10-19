@@ -1,5 +1,6 @@
 package com.uade.soundseekers.controllers;
 
+import com.uade.soundseekers.dto.EventDTO;
 import com.uade.soundseekers.entity.Event;
 import com.uade.soundseekers.entity.Image;
 import com.uade.soundseekers.entity.musicGenre;
@@ -28,10 +29,11 @@ public class EventController {
 
     // Crear un nuevo evento
     @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
-        Event createdEvent = eventService.createEvent(event);
+    public ResponseEntity<Event> createEvent(@RequestBody EventDTO eventDTO) {
+        Event createdEvent = eventService.createEventFromDTO(eventDTO);
         return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
     }
+
 
     // Editar un evento existente
     @PutMapping("/{id}")
