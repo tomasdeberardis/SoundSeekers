@@ -44,7 +44,9 @@ public class User implements UserDetails {
 
     private String password;
 
-
+    public Long getId() {
+        return id;
+    }
 
     @Column(nullable = false)
     private String lastName;
