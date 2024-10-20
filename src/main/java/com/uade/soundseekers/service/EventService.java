@@ -21,7 +21,6 @@ public class EventService {
     @Autowired
     private UserService userService;
 
-
     // Obtener todos los eventos
     @Transactional
     public List<Event> getAllEvents() {
@@ -45,19 +44,17 @@ public class EventService {
         event.setLongitude(eventDTO.getLongitude());
         event.setDateTime(eventDTO.getDateTime());
         event.setPrice(eventDTO.getPrice());
-        if (optionalOrganizer.isPresent()){
 
+        if (optionalOrganizer.isPresent()) {
             User organizer = optionalOrganizer.get();
             event.setOrganizer(organizer);
-        }
-       else{
+        } else {
             throw new RuntimeException("Organizador no encontrado con el ID: " + eventDTO.getOrganizerId());
-
-
         }
+
         event.setGenres(eventDTO.getGenres().stream()
-                .map(genre -> musicGenre.valueOf(genre.toUpperCase()))
-                .collect(Collectors.toList()));
+            .map(genre -> musicGenre.valueOf(genre.toUpperCase()))
+            .collect(Collectors.toList()));
 
         eventDAO.save(event);
         return event;
@@ -88,7 +85,7 @@ public class EventService {
     // Filtros avanzados
     @Transactional
     public List<Event> getEventsByFilters(String name, List<musicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
-        return eventDAO.findByAdvancedFilters(name,genres, startDate, endDate, minPrice, maxPrice);
+        return eventDAO.findByAdvancedFilters(name, genres, startDate, endDate, minPrice, maxPrice);
     }
 
     // Búsqueda de eventos por proximidad (latitud, longitud, radio)
@@ -107,6 +104,7 @@ public class EventService {
             eventDAO.update(event);
         }
     }
+
     @Transactional
     public void removeImageFromEvent(Long eventId, Long imageId) {
         Optional<Event> eventOptional = eventDAO.findById(eventId);

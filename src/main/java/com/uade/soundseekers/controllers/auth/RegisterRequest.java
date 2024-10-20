@@ -39,4 +39,3 @@ public class RegisterRequest {
     private Role role;
     private Set<GeneroMusical> generosMusicalesPreferidos;
 }
-

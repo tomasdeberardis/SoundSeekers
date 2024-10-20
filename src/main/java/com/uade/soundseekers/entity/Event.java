@@ -1,15 +1,13 @@
 package com.uade.soundseekers.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Setter
-@Getter
+@Data
 @Entity
 @Table(name = "Event")
 public class Event {
@@ -34,12 +32,8 @@ public class Event {
     private List<Image> images = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(
-            name = "event_users",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(name = "event_users", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> attendees = new ArrayList<>();
-
 
     @ElementCollection(targetClass = musicGenre.class)
     @Enumerated(EnumType.STRING)

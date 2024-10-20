@@ -24,9 +24,7 @@ public class AuthenticationService {
 
     private static final String EMAIL_REGEX = "^(?!.*\\.\\..)(?!.*\\.$)(?!^\\.)[A-Za-z0-9][A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$"; //restricciones del mail
 
-
     public AuthenticationResponse register(RegisterRequest request) {
-        // Validar el email utilizando una expresión regular más estricta
         if (!isValidEmail(request.getEmail())) {
             throw new IllegalArgumentException("El email proporcionado no es válido.");
         }
@@ -51,7 +49,7 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .role(user.getRole().name())
-                .userId(user.getId()) // Cambiado de id a userId
+                .userId(user.getId())
                 .build();
     }
 
