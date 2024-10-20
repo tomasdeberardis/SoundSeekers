@@ -51,33 +51,31 @@ public class EventController {
     // Filtros avanzados
     @GetMapping("/filters")
     public List<Event> getEventsByFilters(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) List<String> genres,
-            @RequestParam(required = false) LocalDateTime startDate,
-            @RequestParam(required = false) LocalDateTime endDate,
-            @RequestParam(required = false) Double minPrice,
-            @RequestParam(required = false) Double maxPrice)
-             {
-                 // Convierte la lista de Strings a una lista de Enums manualmente
-                 List<musicGenre> genreEnumList = null;
-                 if (genres != null) {
-                     genreEnumList = genres.stream()
-                             .map(genre -> musicGenre.valueOf(genre.toUpperCase())) // Convierte cada String a su Enum correspondiente
-                             .collect(Collectors.toList());
-                 }
-        return eventService.getEventsByFilters(name,genreEnumList, startDate, endDate, minPrice, maxPrice);
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) List<String> genres,
+        @RequestParam(required = false) LocalDateTime startDate,
+        @RequestParam(required = false) LocalDateTime endDate,
+        @RequestParam(required = false) Double minPrice,
+        @RequestParam(required = false) Double maxPrice) {
+        // Convierte la lista de Strings a una lista de Enums manualmente
+        List<musicGenre> genreEnumList = null;
+        if (genres != null) {
+            genreEnumList = genres.stream()
+                .map(genre -> musicGenre.valueOf(genre.toUpperCase())) // Convierte cada String a su Enum correspondiente
+                .collect(Collectors.toList());
+        }
+        return eventService.getEventsByFilters(name, genreEnumList, startDate, endDate, minPrice, maxPrice);
     }
 
     // Búsqueda de eventos por proximidad (latitud, longitud, radio)
     @GetMapping("/proximity")
     public List<Event> searchEventsByProximity(
-            @RequestParam Double lat,
-            @RequestParam Double lng,
-            @RequestParam Double radius
+        @RequestParam Double lat,
+        @RequestParam Double lng,
+        @RequestParam Double radius
     ) {
         return eventService.searchEventsByProximity(lat, lng, radius);
     }
-
 
     @PostMapping("/{id}/images")
     public ResponseEntity<Void> addImageToEvent(@PathVariable Long id, @RequestBody Image image) {
