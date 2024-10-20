@@ -1,7 +1,7 @@
 package com.uade.soundseekers.controllers.auth;
 
+import com.uade.soundseekers.entity.MusicGenre;
 import com.uade.soundseekers.entity.Role;
-import com.uade.soundseekers.entity.GeneroMusical;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -37,5 +37,5 @@ public class RegisterRequest {
     private String password;
 
     private Role role;
-    private Set<GeneroMusical> generosMusicalesPreferidos;
+    private Set<MusicGenre> generosMusicalesPreferidos;
 }

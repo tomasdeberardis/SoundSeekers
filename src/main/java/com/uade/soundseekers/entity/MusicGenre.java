@@ -1,6 +1,6 @@
 package com.uade.soundseekers.entity;
 
-public enum musicGenre {
+public enum MusicGenre {
     ROCK,
     POP,
     JAZZ,
@@ -27,5 +27,6 @@ public enum musicGenre {
     FOLKLORE_MODERNO,
     ALTERNATIVE,
     PUNK_ROCK,
-    CLASICO, GRUNGE
+    CLASICO,
+    GRUNGE
 }

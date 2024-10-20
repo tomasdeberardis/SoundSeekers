@@ -1,10 +1,9 @@
 package com.uade.soundseekers;
 
-import com.uade.soundseekers.entity.Event;
+import com.uade.soundseekers.dto.EventDTO;
+import com.uade.soundseekers.dto.UserDTO;
 import com.uade.soundseekers.entity.Localidad;
 import com.uade.soundseekers.entity.User;
-import com.uade.soundseekers.entity.Role;
-import com.uade.soundseekers.entity.musicGenre;
 import com.uade.soundseekers.service.EventService;
 import com.uade.soundseekers.service.LocalidadService;
 import com.uade.soundseekers.service.UserService;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -80,126 +80,143 @@ public class DataInitializer implements CommandLineRunner {
 
         localidadService.saveAll(localidades);
 
-        // Create Users
-        User user1 = User.builder()
+        UserDTO user1DTO = UserDTO.builder()
             .name("Juan")
             .lastName("Pérez")
             .username("juanp")
             .email("juan.perez@gmail.com")
             .password("password123")
             .edad(25)
-            .role(Role.ARTIST)
+            .role("ARTIST")
+            .localidadId(1L)
+            .genres(List.of("CUARTETO", "POP"))
             .build();
 
-        User user2 = User.builder()
+        UserDTO user2DTO = UserDTO.builder()
             .name("Maria")
             .lastName("Gomez")
             .username("mariag")
             .email("maria.gomez@gmail.com")
             .password("password123")
             .edad(30)
-            .role(Role.CLIENT)
+            .role("ARTIST")
+            .localidadId(3L)
+            .genres(List.of("ROCK", "FUSION"))
             .build();
 
-        User user3 = User.builder()
+        UserDTO user3DTO = UserDTO.builder()
             .name("Carlos")
             .lastName("Lopez")
             .username("carlosl")
             .email("carlos.lopez@gmail.com")
             .password("password123")
             .edad(28)
-            .role(Role.CLIENT)
+            .role("CLIENT")
+            .localidadId(8L)
+            .genres(List.of("REGGAE", "POP"))
             .build();
 
-        userService.saveUser(user1);
-        userService.saveUser(user2);
-        userService.saveUser(user3);
+        userService.createUser(user1DTO);
+        userService.createUser(user2DTO);
+        userService.createUser(user3DTO);
+
+        Optional<User> user1 = userService.getUserByUsername("juanp");
+        Optional<User> user2 = userService.getUserByUsername("mariag");
+        Optional<User> user3 = userService.getUserByUsername("carlosl");
 
         // Create Events
-        Event event1 = new Event();
-        event1.setName("Concierto de Rock en Buenos Aires");
-        event1.setDescription("Una noche increíble de rock en vivo.");
-        event1.setLatitude(-34.603722);
-        event1.setLongitude(-58.381592);
-        event1.setDateTime(LocalDateTime.of(2024, 10, 10, 21, 0));
-        event1.setPrice(1500.0);
-        event1.setGenres(List.of(musicGenre.ROCK));
-        event1.setOrganizer(user1);
-        event1.setAttendees(List.of(user1, user2));
+        EventDTO event1DTO = EventDTO.builder()
+            .name("Concierto de Rock en Buenos Aires")
+            .description("Una noche increíble de rock en vivo.")
+            .latitude(-34.603722)
+            .longitude(-58.381592)
+            .dateTime(LocalDateTime.of(2024, 10, 10, 21, 0))
+            .price(1500.0)
+            .genres(List.of("ROCK"))
+            .organizerId(user1.get().getId())
+            .imageIds(List.of())
+            .localidadId(0L)
+            .build();
 
-        Event event2 = new Event();
-        event2.setName("Festival de Jazz en Palermo");
-        event2.setDescription("Sonidos vibrantes de jazz en Palermo.");
-        event2.setLatitude(-34.571527);
-        event2.setLongitude(-58.423469);
-        event2.setDateTime(LocalDateTime.of(2024, 11, 5, 19, 0));
-        event2.setPrice(2000.0);
-        event2.setGenres(List.of(musicGenre.JAZZ));
-        event2.setOrganizer(user2);
-        event2.setAttendees(List.of(user2, user3));
+        EventDTO event2DTO = EventDTO.builder()
+            .name("Festival de Jazz en Palermo")
+            .description("Sonidos vibrantes de jazz en Palermo.")
+            .latitude(-34.571527)
+            .longitude(-58.423469)
+            .dateTime(LocalDateTime.of(2024, 11, 5, 19, 0))
+            .price(2000.0)
+            .genres(List.of("JAZZ"))
+            .organizerId(user1.get().getId())
+            .localidadId(0L)
+            .build();
 
-        Event event3 = new Event();
-        event3.setName("Fiesta de Cumbia en La Plata");
-        event3.setDescription("Baila toda la noche con los mejores hits de cumbia.");
-        event3.setLatitude(-34.921450);
-        event3.setLongitude(-57.954530);
-        event3.setDateTime(LocalDateTime.of(2024, 12, 20, 23, 0));
-        event3.setPrice(1000.0);
-        event3.setGenres(List.of(musicGenre.CUMBIA));
-        event3.setOrganizer(user3);
-        event3.setAttendees(List.of(user1, user3));
+        EventDTO event3DTO = EventDTO.builder()
+            .name("Fiesta de Cumbia en La Plata")
+            .description("Baila toda la noche con los mejores hits de cumbia.")
+            .latitude(-34.921450)
+            .longitude(-57.954530)
+            .dateTime(LocalDateTime.of(2024, 12, 20, 23, 0))
+            .price(1000.0)
+            .genres(List.of("CUMBIA"))
+            .organizerId(user1.get().getId())
+            .localidadId(0L)
+            .build();
 
-        Event event4 = new Event();
-        event4.setName("Fiesta Electrónica en Rosario");
-        event4.setDescription("Disfruta la mejor música electrónica en Rosario.");
-        event4.setLatitude(-32.944244);
-        event4.setLongitude(-60.650539);
-        event4.setDateTime(LocalDateTime.of(2024, 10, 31, 22, 0));
-        event4.setPrice(3000.0);
-        event4.setGenres(List.of(musicGenre.ELECTRONICA));
-        event4.setOrganizer(user1);
-        event4.setAttendees(List.of(user2));
+        EventDTO event4DTO = EventDTO.builder()
+            .name("Fiesta Electrónica en Rosario")
+            .description("Disfruta la mejor música electrónica en Rosario.")
+            .latitude(-32.944244)
+            .longitude(-60.650539)
+            .dateTime(LocalDateTime.of(2024, 10, 31, 22, 0))
+            .price(3000.0)
+            .genres(List.of("ELECTRONICA"))
+            .organizerId(user1.get().getId())
+            .localidadId(0L)
+            .build();
 
-        Event event5 = new Event();
-        event5.setName("Festival de Reggae en Córdoba");
-        event5.setDescription("Vibra con los sonidos del reggae en Córdoba.");
-        event5.setLatitude(-31.416668);
-        event5.setLongitude(-64.183334);
-        event5.setDateTime(LocalDateTime.of(2024, 10, 25, 20, 0));
-        event5.setPrice(1800.0);
-        event5.setGenres(List.of(musicGenre.REGGAE));
-        event5.setOrganizer(user3);
-        event5.setAttendees(List.of(user2, user3));
+        EventDTO event5DTO = EventDTO.builder()
+            .name("Festival de Reggae en Córdoba")
+            .description("Vibra con los sonidos del reggae en Córdoba.")
+            .latitude(-31.416668)
+            .longitude(-64.183334)
+            .dateTime(LocalDateTime.of(2024, 10, 25, 20, 0))
+            .price(1800.0)
+            .genres(List.of("REGGAE"))
+            .organizerId(user2.get().getId())
+            .localidadId(0L)
+            .build();
 
-        Event event6 = new Event();
-        event6.setName("Concierto de Música Clásica en Mendoza");
-        event6.setDescription("Disfruta de una noche de música clásica en el corazón de Mendoza.");
-        event6.setLatitude(-32.889458);
-        event6.setLongitude(-68.845840);
-        event6.setDateTime(LocalDateTime.of(2024, 11, 15, 19, 30));
-        event6.setPrice(2200.0);
-        event6.setGenres(List.of(musicGenre.CLASICO));
-        event6.setOrganizer(user2);
-        event6.setAttendees(List.of(user1));
+        EventDTO event6DTO = EventDTO.builder()
+            .name("Concierto de Música Clásica en Mendoza")
+            .description("Disfruta de una noche de música clásica en el corazón de Mendoza.")
+            .latitude(-32.889458)
+            .longitude(-68.845840)
+            .dateTime(LocalDateTime.of(2024, 11, 15, 19, 30))
+            .price(2200.0)
+            .genres(List.of("TANGO"))
+            .organizerId(user2.get().getId())
+            .localidadId(0L)
+            .build();
 
-        Event event7 = new Event();
-        event7.setName("Fiesta de Reggaetón en Mar del Plata");
-        event7.setDescription("Ven a disfrutar del mejor reggaetón en la playa.");
-        event7.setLatitude(-38.005477);
-        event7.setLongitude(-57.542611);
-        event7.setDateTime(LocalDateTime.of(2024, 12, 5, 23, 0));
-        event7.setPrice(2500.0);
-        event7.setGenres(List.of(musicGenre.REGGAETON));
-        event7.setOrganizer(user3);
-        event7.setAttendees(List.of(user1, user2, user3));
+        EventDTO event7DTO = EventDTO.builder()
+            .name("Fiesta de Reggaetón en Mar del Plata")
+            .description("Ven a disfrutar del mejor reggaetón en la playa.")
+            .latitude(-38.005477)
+            .longitude(-57.542611)
+            .dateTime(LocalDateTime.of(2024, 12, 5, 23, 0))
+            .price(2500.0)
+            .genres(List.of("RUMBA"))
+            .organizerId(user2.get().getId())
+            .localidadId(0L)
+            .build();
 
         // Save Events
-        eventService.createEvent(event1);
-        eventService.createEvent(event2);
-        eventService.createEvent(event3);
-        eventService.createEvent(event4);
-        eventService.createEvent(event5);
-        eventService.createEvent(event6);
-        eventService.createEvent(event7);
+        eventService.createEvent(event1DTO);
+        eventService.createEvent(event2DTO);
+        eventService.createEvent(event3DTO);
+        eventService.createEvent(event4DTO);
+        eventService.createEvent(event5DTO);
+        eventService.createEvent(event6DTO);
+        eventService.createEvent(event7DTO);
     }
 }

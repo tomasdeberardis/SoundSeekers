@@ -51,7 +51,11 @@ public class User implements UserDetails {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<GeneroMusical> generosMusicalesPreferidos;
+    private Set<MusicGenre> generosMusicalesPreferidos;
+
+    @ManyToOne
+    @JoinColumn(name = "localidad_id", nullable = false)
+    private Localidad localidad;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

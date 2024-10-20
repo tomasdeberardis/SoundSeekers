@@ -35,10 +35,14 @@ public class Event {
     @JoinTable(name = "event_users", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> attendees = new ArrayList<>();
 
-    @ElementCollection(targetClass = musicGenre.class)
+    @ElementCollection(targetClass = MusicGenre.class)
     @Enumerated(EnumType.STRING)
-    private List<musicGenre> genres = new ArrayList<>();
+    private List<MusicGenre> genres = new ArrayList<>();
 
     @ManyToOne
     private User organizer;
+
+    @ManyToOne
+    @JoinColumn(name = "localidad_id", nullable = false)
+    private Localidad localidad;
 }

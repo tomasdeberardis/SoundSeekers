@@ -2,7 +2,7 @@ package com.uade.soundseekers.repository;
 
 import com.uade.soundseekers.entity.Event;
 import com.uade.soundseekers.entity.EventDAO;
-import com.uade.soundseekers.entity.musicGenre;
+import com.uade.soundseekers.entity.MusicGenre;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
@@ -48,7 +48,7 @@ public class EventDAOImpl implements EventDAO {
         }
     }
 
-    public List<Event> findByAdvancedFilters(String name,List<musicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
+    public List<Event> findByAdvancedFilters(String name, List<MusicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
         StringBuilder queryBuilder = new StringBuilder("SELECT e FROM Event e WHERE 1=1 ");
 
         if (name != null) {

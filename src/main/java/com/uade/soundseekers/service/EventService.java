@@ -1,5 +1,6 @@
 package com.uade.soundseekers.service;
 
+import com.uade.soundseekers.dto.MessageResponseDto;
 import com.uade.soundseekers.entity.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +28,9 @@ public class EventService {
         return eventDAO.findAll();
     }
 
-    @Transactional
-    public Event createEvent(Event event) {
-        eventDAO.save(event);
-        return event;
-    }
-
     // Crear un nuevo evento
     @Transactional
-    public Event createEventFromDTO(EventDTO eventDTO) {
+    public MessageResponseDto createEvent(EventDTO eventDTO) {
         Optional<User> optionalOrganizer = userService.getUserById(eventDTO.getOrganizerId()); // Buscar organizador por ID
         Event event = new Event();
         event.setName(eventDTO.getName());
@@ -53,16 +48,16 @@ public class EventService {
         }
 
         event.setGenres(eventDTO.getGenres().stream()
-            .map(genre -> musicGenre.valueOf(genre.toUpperCase()))
+            .map(genre -> MusicGenre.valueOf(genre.toUpperCase()))
             .collect(Collectors.toList()));
 
         eventDAO.save(event);
-        return event;
+        return new MessageResponseDto("Event created successfully.");
     }
 
     // Editar un evento existente
     @Transactional
-    public Event updateEvent(Long id, Event eventDetails) {
+    public MessageResponseDto updateEvent(Long id, EventDTO eventDetails) {
         Event event = eventDAO.findById(id).orElseThrow(() -> new RuntimeException("Evento no encontrado"));
         event.setName(eventDetails.getName());
         event.setDescription(eventDetails.getDescription());
@@ -70,21 +65,31 @@ public class EventService {
         event.setLongitude(eventDetails.getLongitude());
         event.setDateTime(eventDetails.getDateTime());
         event.setPrice(eventDetails.getPrice());
-        event.setGenres(eventDetails.getGenres());
-        event.setAttendees(eventDetails.getAttendees());
+        event.setGenres(eventDetails.getGenres().stream()
+            .map(genre -> {
+                try {
+                    return MusicGenre.valueOf(genre.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new RuntimeException("Invalid genre: " + genre);
+                }
+            })
+            .collect(Collectors.toList()));
         eventDAO.update(event);
-        return event;
+        return new MessageResponseDto("Event updated successfully.");
+
     }
 
     // Eliminar un evento
     @Transactional
-    public void deleteEvent(Long id) {
+    public MessageResponseDto deleteEvent(Long id) {
         eventDAO.deleteById(id);
+        return new MessageResponseDto("Event deleted successfully.");
+
     }
 
     // Filtros avanzados
     @Transactional
-    public List<Event> getEventsByFilters(String name, List<musicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
+    public List<Event> getEventsByFilters(String name, List<MusicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
         return eventDAO.findByAdvancedFilters(name, genres, startDate, endDate, minPrice, maxPrice);
     }
 

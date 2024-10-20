@@ -1,16 +1,27 @@
 package com.uade.soundseekers.service;
+import com.uade.soundseekers.dto.MessageResponseDto;
+import com.uade.soundseekers.dto.UserDTO;
+import com.uade.soundseekers.entity.Localidad;
+import com.uade.soundseekers.entity.MusicGenre;
+import com.uade.soundseekers.entity.Role;
+import com.uade.soundseekers.repository.LocalidadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.uade.soundseekers.entity.User;
 import com.uade.soundseekers.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private LocalidadRepository localidadRepository;
 
     // Obtener todos los usuarios
     public List<User> getAllUsers() {
@@ -28,30 +39,59 @@ public class UserService {
     }
 
     // Crear o guardar un nuevo usuario
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public MessageResponseDto createUser(UserDTO userDTO) {
+        User user = new User();
+        user.setName(userDTO.getName());
+        user.setLastName(userDTO.getLastName());
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        user.setEdad(userDTO.getEdad());
+
+        Localidad localidad = localidadRepository.findById(userDTO.getLocalidadId())
+            .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + userDTO.getLocalidadId()));
+        user.setLocalidad(localidad);
+
+        Set<MusicGenre> generosMusicales = userDTO.getGenres().stream()
+            .map(genre -> {
+                try {
+                    return MusicGenre.valueOf(genre.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new RuntimeException("Invalid genre: " + genre);
+                }
+            })
+            .collect(Collectors.toSet());
+        user.setGenerosMusicalesPreferidos(generosMusicales);
+
+        userRepository.save(user);
+        return new MessageResponseDto("User created successfully.");
     }
 
     // Actualizar un usuario existente
-    public User updateUser(Long id, User userDetails) {
+    public MessageResponseDto updateUser(Long id, UserDTO userDTO) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.setEmail(userDetails.getEmail());
-            user.setName(userDetails.getName());
-            user.setPassword(userDetails.getPassword());
-            user.setLastName(userDetails.getLastName());
-            user.setUsername(userDetails.getUsername());
-            user.setEdad(userDetails.getEdad());
-            user.setRole(userDetails.getRole());
-            return userRepository.save(user);
+            user.setEmail(userDTO.getEmail());
+            user.setName(userDTO.getName());
+            user.setPassword(userDTO.getPassword());
+            user.setLastName(userDTO.getLastName());
+            user.setUsername(userDTO.getUsername());
+            user.setEdad(userDTO.getEdad());
+            user.setRole(Role.valueOf(userDTO.getRole()));
+            Localidad localidad = localidadRepository.findById(userDTO.getLocalidadId())
+                .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + userDTO.getLocalidadId()));
+            user.setLocalidad(localidad);
+            userRepository.save(user);
+            return new MessageResponseDto("User updated successfully.");
         } else {
             throw new RuntimeException("Usuario no encontrado con el ID: " + id);
         }
     }
 
     // Eliminar un usuario por ID
-    public void deleteUser(Long id) {
+    public MessageResponseDto deleteUser(Long id) {
         userRepository.deleteById(id);
+        return new MessageResponseDto("User deleted successfully.");
     }
 }

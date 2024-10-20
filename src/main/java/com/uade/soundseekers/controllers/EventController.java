@@ -3,7 +3,7 @@ package com.uade.soundseekers.controllers;
 import com.uade.soundseekers.dto.EventDTO;
 import com.uade.soundseekers.entity.Event;
 import com.uade.soundseekers.entity.Image;
-import com.uade.soundseekers.entity.musicGenre;
+import com.uade.soundseekers.entity.MusicGenre;
 import com.uade.soundseekers.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,23 +29,20 @@ public class EventController {
 
     // Crear un nuevo evento
     @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestBody EventDTO eventDTO) {
-        Event createdEvent = eventService.createEventFromDTO(eventDTO);
-        return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
+    public ResponseEntity<?> createEvent(@RequestBody EventDTO eventDTO) {
+        return ResponseEntity.ok(eventService.createEvent(eventDTO));
     }
 
     // Editar un evento existente
     @PutMapping("/{id}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event eventDetails) {
-        Event updatedEvent = eventService.updateEvent(id, eventDetails);
-        return new ResponseEntity<>(updatedEvent, HttpStatus.OK);
+    public ResponseEntity<?> updateEvent(@PathVariable Long id, @RequestBody EventDTO eventDTO) {
+        return ResponseEntity.ok(eventService.updateEvent(id, eventDTO));
     }
 
     // Eliminar un evento
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
-        eventService.deleteEvent(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> deleteEvent(@PathVariable Long id) {
+        return ResponseEntity.ok(eventService.deleteEvent(id));
     }
 
     // Filtros avanzados
@@ -58,10 +55,10 @@ public class EventController {
         @RequestParam(required = false) Double minPrice,
         @RequestParam(required = false) Double maxPrice) {
         // Convierte la lista de Strings a una lista de Enums manualmente
-        List<musicGenre> genreEnumList = null;
+        List<MusicGenre> genreEnumList = null;
         if (genres != null) {
             genreEnumList = genres.stream()
-                .map(genre -> musicGenre.valueOf(genre.toUpperCase())) // Convierte cada String a su Enum correspondiente
+                .map(genre -> MusicGenre.valueOf(genre.toUpperCase())) // Convierte cada String a su Enum correspondiente
                 .collect(Collectors.toList());
         }
         return eventService.getEventsByFilters(name, genreEnumList, startDate, endDate, minPrice, maxPrice);
