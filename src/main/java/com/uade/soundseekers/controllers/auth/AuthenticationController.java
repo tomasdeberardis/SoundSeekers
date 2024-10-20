@@ -1,5 +1,7 @@
 package com.uade.soundseekers.controllers.auth;
 
+import com.uade.soundseekers.dto.AuthenticationRequest;
+import com.uade.soundseekers.dto.AuthenticationResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;

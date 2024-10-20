@@ -41,12 +41,14 @@ public class UserService {
     // Crear o guardar un nuevo usuario
     public MessageResponseDto createUser(UserDTO userDTO) {
         User user = new User();
+        user.setEmail(userDTO.getEmail());
         user.setName(userDTO.getName());
+        user.setPassword(userDTO.getPassword());
         user.setLastName(userDTO.getLastName());
         user.setUsername(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
         user.setEdad(userDTO.getEdad());
+        user.setEmailVerified(false);
+        user.setRole(Role.valueOf(userDTO.getRole()));
 
         Localidad localidad = localidadRepository.findById(userDTO.getLocalidadId())
             .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + userDTO.getLocalidadId()));
@@ -79,9 +81,22 @@ public class UserService {
             user.setUsername(userDTO.getUsername());
             user.setEdad(userDTO.getEdad());
             user.setRole(Role.valueOf(userDTO.getRole()));
+
             Localidad localidad = localidadRepository.findById(userDTO.getLocalidadId())
                 .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + userDTO.getLocalidadId()));
             user.setLocalidad(localidad);
+
+            Set<MusicGenre> generosMusicales = userDTO.getGenres().stream()
+                .map(genre -> {
+                    try {
+                        return MusicGenre.valueOf(genre.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        throw new RuntimeException("Invalid genre: " + genre);
+                    }
+                })
+                .collect(Collectors.toSet());
+            user.setGenerosMusicalesPreferidos(generosMusicales);
+
             userRepository.save(user);
             return new MessageResponseDto("User updated successfully.");
         } else {

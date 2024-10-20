@@ -135,7 +135,7 @@ public class DataInitializer implements CommandLineRunner {
             .genres(List.of("ROCK"))
             .organizerId(user1.get().getId())
             .imageIds(List.of())
-            .localidadId(0L)
+            .localidadId(1L)
             .build();
 
         EventDTO event2DTO = EventDTO.builder()
@@ -147,7 +147,7 @@ public class DataInitializer implements CommandLineRunner {
             .price(2000.0)
             .genres(List.of("JAZZ"))
             .organizerId(user1.get().getId())
-            .localidadId(0L)
+            .localidadId(12L)
             .build();
 
         EventDTO event3DTO = EventDTO.builder()
@@ -159,7 +159,7 @@ public class DataInitializer implements CommandLineRunner {
             .price(1000.0)
             .genres(List.of("CUMBIA"))
             .organizerId(user1.get().getId())
-            .localidadId(0L)
+            .localidadId(8L)
             .build();
 
         EventDTO event4DTO = EventDTO.builder()
@@ -171,7 +171,7 @@ public class DataInitializer implements CommandLineRunner {
             .price(3000.0)
             .genres(List.of("ELECTRONICA"))
             .organizerId(user1.get().getId())
-            .localidadId(0L)
+            .localidadId(9L)
             .build();
 
         EventDTO event5DTO = EventDTO.builder()
@@ -183,7 +183,7 @@ public class DataInitializer implements CommandLineRunner {
             .price(1800.0)
             .genres(List.of("REGGAE"))
             .organizerId(user2.get().getId())
-            .localidadId(0L)
+            .localidadId(13L)
             .build();
 
         EventDTO event6DTO = EventDTO.builder()
@@ -195,7 +195,7 @@ public class DataInitializer implements CommandLineRunner {
             .price(2200.0)
             .genres(List.of("TANGO"))
             .organizerId(user2.get().getId())
-            .localidadId(0L)
+            .localidadId(10L)
             .build();
 
         EventDTO event7DTO = EventDTO.builder()
@@ -207,7 +207,7 @@ public class DataInitializer implements CommandLineRunner {
             .price(2500.0)
             .genres(List.of("RUMBA"))
             .organizerId(user2.get().getId())
-            .localidadId(0L)
+            .localidadId(7L)
             .build();
 
         // Save Events
