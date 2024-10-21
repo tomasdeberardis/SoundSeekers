@@ -72,7 +72,9 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
             .accessToken(jwtToken)
             .role(user.getRole().name())
+            .userId(user.getId())
             .build();
+
     }
 
     private boolean isValidEmail(String email) {
