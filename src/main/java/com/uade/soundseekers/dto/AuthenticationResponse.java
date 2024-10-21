@@ -1,4 +1,4 @@
-package com.uade.soundseekers.controllers.auth;
+package com.uade.soundseekers.dto;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,6 +1,8 @@
 package com.uade.soundseekers.service;
 
+import com.uade.soundseekers.dto.MessageResponseDto;
 import com.uade.soundseekers.entity.*;
+import com.uade.soundseekers.repository.LocalidadRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,21 +23,18 @@ public class EventService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LocalidadRepository localidadRepository;
+
     // Obtener todos los eventos
     @Transactional
     public List<Event> getAllEvents() {
         return eventDAO.findAll();
     }
 
-    @Transactional
-    public Event createEvent(Event event) {
-        eventDAO.save(event);
-        return event;
-    }
-
     // Crear un nuevo evento
     @Transactional
-    public Event createEventFromDTO(EventDTO eventDTO) {
+    public MessageResponseDto createEvent(EventDTO eventDTO) {
         Optional<User> optionalOrganizer = userService.getUserById(eventDTO.getOrganizerId()); // Buscar organizador por ID
         Event event = new Event();
         event.setName(eventDTO.getName());
@@ -53,38 +52,54 @@ public class EventService {
         }
 
         event.setGenres(eventDTO.getGenres().stream()
-            .map(genre -> musicGenre.valueOf(genre.toUpperCase()))
+            .map(genre -> MusicGenre.valueOf(genre.toUpperCase()))
             .collect(Collectors.toList()));
 
+        Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
+            .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + eventDTO.getLocalidadId()));
+        event.setLocalidad(localidad);
+
         eventDAO.save(event);
-        return event;
+        return new MessageResponseDto("Event created successfully.");
     }
 
     // Editar un evento existente
     @Transactional
-    public Event updateEvent(Long id, Event eventDetails) {
+    public MessageResponseDto updateEvent(Long id, EventDTO eventDTO) {
         Event event = eventDAO.findById(id).orElseThrow(() -> new RuntimeException("Evento no encontrado"));
-        event.setName(eventDetails.getName());
-        event.setDescription(eventDetails.getDescription());
-        event.setLatitude(eventDetails.getLatitude());
-        event.setLongitude(eventDetails.getLongitude());
-        event.setDateTime(eventDetails.getDateTime());
-        event.setPrice(eventDetails.getPrice());
-        event.setGenres(eventDetails.getGenres());
-        event.setAttendees(eventDetails.getAttendees());
+        event.setName(eventDTO.getName());
+        event.setDescription(eventDTO.getDescription());
+        event.setLatitude(eventDTO.getLatitude());
+        event.setLongitude(eventDTO.getLongitude());
+        event.setDateTime(eventDTO.getDateTime());
+        event.setPrice(eventDTO.getPrice());
+        event.setGenres(eventDTO.getGenres().stream()
+            .map(genre -> {
+                try {
+                    return MusicGenre.valueOf(genre.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new RuntimeException("Invalid genre: " + genre);
+                }
+            })
+            .collect(Collectors.toList()));
+        Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
+            .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + eventDTO.getLocalidadId()));
+        event.setLocalidad(localidad);
         eventDAO.update(event);
-        return event;
+        return new MessageResponseDto("Event updated successfully.");
     }
 
     // Eliminar un evento
     @Transactional
-    public void deleteEvent(Long id) {
+    public MessageResponseDto deleteEvent(Long id) {
         eventDAO.deleteById(id);
+        return new MessageResponseDto("Event deleted successfully.");
+
     }
 
     // Filtros avanzados
     @Transactional
-    public List<Event> getEventsByFilters(String name, List<musicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
+    public List<Event> getEventsByFilters(String name, List<MusicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
         return eventDAO.findByAdvancedFilters(name, genres, startDate, endDate, minPrice, maxPrice);
     }
 
