@@ -54,7 +54,7 @@ public class User implements UserDetails {
     private Set<MusicGenre> generosMusicalesPreferidos;
 
     @ManyToOne
-    @JoinColumn(name = "localidad_id", nullable = false)
+    @JoinColumn(name = "localidad_id")
     private Localidad localidad;
 
     @Override
