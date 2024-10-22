@@ -2,14 +2,12 @@ package com.uade.soundseekers.controllers.auth;
 
 import com.uade.soundseekers.service.VerificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://front-seminario.s3-website.us-east-2.amazonaws.com/")
 public class VerificationController {
 
     private final VerificationService verificationService;

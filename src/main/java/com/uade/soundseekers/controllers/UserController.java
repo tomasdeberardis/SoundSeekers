@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://front-seminario.s3-website.us-east-2.amazonaws.com/")
 public class UserController {
 
     @Autowired

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/events")
+@CrossOrigin(origins = "http://front-seminario.s3-website.us-east-2.amazonaws.com/")
 public class EventController {
 
     @Autowired

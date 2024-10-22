@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@CrossOrigin(origins = "http://front-seminario.s3-website.us-east-2.amazonaws.com/")
 public class RegisterRequest {
 
     @NotBlank(message = "Email is mandatory")
