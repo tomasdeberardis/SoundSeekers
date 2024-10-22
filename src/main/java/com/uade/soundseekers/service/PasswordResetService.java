@@ -28,7 +28,7 @@ public class PasswordResetService {
         verificationToken.setUser(user);
         verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
         tokenRepository.save(verificationToken);
-        emailService.sendPasswordResetEmail(user.getEmail(), token);
+        //  emailService.sendPasswordResetEmail(user.getEmail(), token);
     }
 
     public void resetPassword(String token, String newPassword) {

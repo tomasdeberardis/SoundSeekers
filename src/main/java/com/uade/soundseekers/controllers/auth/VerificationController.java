@@ -14,8 +14,8 @@ public class VerificationController {
 
     private final VerificationService verificationService;
 
-    @PostMapping("/verify")
-    public String verifyEmail(@RequestParam("token") String token) {
-        return verificationService.verifyEmail(token);
-    }
+    // @PostMapping("/verify")
+    //  public String verifyEmail(@RequestParam("token") String token) {
+        //return verificationService.verifyEmail(token);
+        // }
 }

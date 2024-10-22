@@ -15,16 +15,16 @@ public class VerificationService {
     private final VerificationTokenRepository tokenRepository;
     private final UserRepository userRepository;
 
-    public String verifyEmail(String token) {
-        VerificationToken verificationToken = tokenRepository.findByToken(token);
-        if (verificationToken == null) {
-            return "Invalid token";
-        }
+    //public String verifyEmail(String token) {
+//        VerificationToken verificationToken = tokenRepository.findByToken(token);
+        //      if (verificationToken == null) {
+        //  return "Invalid token";
+        //  }
+    //
+        //User user = verificationToken.getUser();
+        //user.setEmailVerified(true);
+        //userRepository.save(user);
 
-        User user = verificationToken.getUser();
-        user.setEmailVerified(true);
-        userRepository.save(user);
-
-        return "Email verified successfully";
+        //return "Email verified successfully";
     }
-}
+//}

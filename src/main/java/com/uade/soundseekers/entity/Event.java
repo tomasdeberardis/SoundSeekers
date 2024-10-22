@@ -43,6 +43,6 @@ public class Event {
     private User organizer;
 
     @ManyToOne
-    @JoinColumn(name = "localidad_id", nullable = false)
+    @JoinColumn(name = "localidad_id", nullable = true)
     private Localidad localidad;
 }

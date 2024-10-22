@@ -52,7 +52,7 @@ public class AuthenticationService {
             .password(passwordEncoder.encode(request.getPassword()))
             .role(request.getRole())
             .generosMusicalesPreferidos(request.getGenerosMusicalesPreferidos())
-            .isEmailVerified(false)
+            //.isEmailVerified(false)
             .build();
 
         repository.save(user);
@@ -66,7 +66,7 @@ public class AuthenticationService {
         tokenRepository.save(verificationToken);
 
         // Enviar el email de verificación
-        emailService.sendVerificationEmail(user.getEmail(), token);
+        //  emailService.sendVerificationEmail(user.getEmail(), token);
 
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()

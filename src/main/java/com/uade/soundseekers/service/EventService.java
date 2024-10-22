@@ -55,9 +55,17 @@ public class EventService {
             .map(genre -> MusicGenre.valueOf(genre.toUpperCase()))
             .collect(Collectors.toList()));
 
-        Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
-            .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + eventDTO.getLocalidadId()));
-        event.setLocalidad(localidad);
+        //Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
+          //  .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + eventDTO.getLocalidadId()));
+      //  event.setLocalidad(localidad);
+
+        if (eventDTO.getLocalidadId() != null) {
+            Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
+                    .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + eventDTO.getLocalidadId()));
+            event.setLocalidad(localidad);
+        } else {
+            event.setLocalidad(null); // Puedes omitir esto si ya está nulo por defecto
+        }
 
         eventDAO.save(event);
         return new MessageResponseDto("Event created successfully.");
