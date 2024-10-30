@@ -85,4 +85,11 @@ public class EventController {
         eventService.removeImageFromEvent(id, imageId);
         return ResponseEntity.ok().build();
     }
+
+    //listado de eventos por artista
+    @GetMapping("/artist/{artistId}")
+    public ResponseEntity<List<Event>> getEventsByArtistId(@PathVariable Long artistId) {
+    List<Event> events = eventService.getEventsByArtistId(artistId);
+    return ResponseEntity.ok(events);
+}
 }

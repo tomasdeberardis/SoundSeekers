@@ -12,4 +12,5 @@ public interface EventDAO {
     void deleteById(Long id);
     List<Event> findByAdvancedFilters(String name, List<MusicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice);
     List<Event> findByProximity(Double lat, Double lng, Double radius);
+    List<Event> findByArtistId(Long artistId);
 }

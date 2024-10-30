@@ -137,4 +137,10 @@ public class EventService {
             eventDAO.update(event);
         }
     }
+
+    //listado de eventos por artista
+    @Transactional
+    public List<Event> getEventsByArtistId(Long artistId) {
+    return eventDAO.findByArtistId(artistId);
+    }
 }
