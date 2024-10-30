@@ -28,7 +28,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(req -> req.requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers("/api/v1/auth/**").permitAll()      // Public authentication endpoints
                     .requestMatchers("/api/user-interactions/**").permitAll() // Allow user interaction endpoints
-                    .requestMatchers("/api/events/**").permitAll()       // Public event endpoints
+                    .requestMatchers("/api/events/**").permitAll()
+                    .requestMatchers("/api/recommendations/**").permitAll()  // Public event endpoints
                     .requestMatchers("/error/**").permitAll()            // Allow error pages
                     .anyRequest().authenticated())            // Secure all other requests
             .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))

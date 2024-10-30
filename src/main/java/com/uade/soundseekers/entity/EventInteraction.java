@@ -25,6 +25,9 @@ public class EventInteraction {
 
     private LocalDateTime interactionDate;
 
+    public EventInteraction() {
+    }
+
     public EventInteraction(User user, Event event, boolean b, boolean b1, LocalDateTime now) {
         this.user = user;
         this.event = event;
@@ -33,5 +36,13 @@ public class EventInteraction {
         this.interactionDate = now;
     }
 
-    // Constructors, getters, setters
+    public boolean isLiked() {
+        return this.liked;
+    }
+
+    public boolean isAssisted() {
+        return this.assisted;
+
+    }
+
 }

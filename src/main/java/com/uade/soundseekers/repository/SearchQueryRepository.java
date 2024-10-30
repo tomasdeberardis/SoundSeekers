@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface SearchQueryRepository extends JpaRepository<SearchQuery, Long> {
     List<SearchQuery> findByUser(User user);
+    List<SearchQuery> findByUserId(Long userId);
+
 }

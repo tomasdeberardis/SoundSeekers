@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface EventInteractionRepository extends JpaRepository<EventInteraction, Long> {
     List<EventInteraction> findByUser(User user);
+    List<EventInteraction> findByUserId(Long userId);
 }
