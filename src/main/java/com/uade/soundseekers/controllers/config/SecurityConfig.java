@@ -31,7 +31,11 @@ public class SecurityConfig {
                     .requestMatchers("/api/events/**").permitAll()
                     .requestMatchers("/api/recommendations/**").permitAll()  // Public event endpoints
                     .requestMatchers("/error/**").permitAll()            // Allow error pages
-                    .anyRequest().authenticated())            // Secure all other requests
+                .requestMatchers("/api/*").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/events/*").permitAll()
+                .requestMatchers("/error/**").permitAll()
+                .anyRequest()
             .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

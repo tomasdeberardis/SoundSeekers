@@ -11,7 +11,6 @@ import com.uade.soundseekers.entity.User;
 import com.uade.soundseekers.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +35,6 @@ public class UserService {
     // Obtener un usuario por nombre de usuario
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
-    }
 
     // Crear o guardar un nuevo usuario
     public MessageResponseDto createUser(UserDTO userDTO) {
