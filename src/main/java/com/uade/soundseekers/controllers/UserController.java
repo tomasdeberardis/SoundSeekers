@@ -41,12 +41,6 @@ public class UserController {
             .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // Crear un nuevo usuario
-    @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
-        return ResponseEntity.ok(userService.createUser(userDTO));
-    }
-
     // Actualizar un usuario existente
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {

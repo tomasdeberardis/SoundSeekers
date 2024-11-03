@@ -8,6 +8,7 @@ import com.uade.soundseekers.entity.Localidad;
 import com.uade.soundseekers.entity.MusicGenre;
 import com.uade.soundseekers.entity.User;
 import com.uade.soundseekers.entity.VerificationToken;
+import com.uade.soundseekers.exception.BadRequestException;
 import com.uade.soundseekers.repository.LocalidadRepository;
 import com.uade.soundseekers.repository.UserRepository;
 import com.uade.soundseekers.repository.VerificationTokenRepository;
@@ -40,19 +41,19 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         if (!isValidEmail(request.getEmail())) {
-            throw new IllegalArgumentException("El email proporcionado no es válido.");
+            throw new BadRequestException("El email proporcionado no es válido.");
         }
 
         if (repository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("El email ya está registrado.");
+            throw new BadRequestException("El email ya está registrado.");
         }
 
         if (repository.findByUsername(request.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("El nombre de usuario ya está registrado.");
+            throw new BadRequestException("El nombre de usuario ya está registrado.");
         }
 
         if (!isValidPassword(request.getPassword())) {
-            throw new IllegalArgumentException("La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.");
+            throw new BadRequestException("La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.");
         }
 
         User user = User.builder()
