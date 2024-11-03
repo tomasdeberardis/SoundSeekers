@@ -85,4 +85,9 @@ public class EventController {
         eventService.removeImageFromEvent(id, imageId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/user/{userId}/attending")
+    public List<Event> getEventsByUserAttendance(@PathVariable Long userId) {
+        return eventService.getEventsByUserAttendance(userId);
+    }
 }

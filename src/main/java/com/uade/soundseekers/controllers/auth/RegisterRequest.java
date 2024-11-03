@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -39,5 +40,5 @@ public class RegisterRequest {
     private String password;
 
     private Role role;
-    private Set<MusicGenre> generosMusicalesPreferidos;
+    private List<MusicGenre> generosMusicalesPreferidos;
 }
