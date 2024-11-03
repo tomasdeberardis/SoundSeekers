@@ -1,6 +1,7 @@
 package com.uade.soundseekers.controllers;
 
 import com.uade.soundseekers.entity.Event;
+import com.uade.soundseekers.entity.EventInteraction;
 import com.uade.soundseekers.service.UserInteractionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,14 @@ public class UserInteractionController {
         userInteractionService.recordLike(userId, eventId); // Assuming Event has a constructor with ID
         return ResponseEntity.ok("Like recorded successfully.");
     }
+
+    @DeleteMapping("/{userId}/events/{eventId}/like")
+    public ResponseEntity<String> deleteLike(@PathVariable Long userId, @PathVariable Long eventId) {
+        userInteractionService.toggleLike(userId, eventId);
+        return ResponseEntity.ok("Like removed successfully.");
+    }
+ 
+
 
     // Endpoint for recording an assist on an event
     @PostMapping("/{userId}/events/{eventId}/assist")
