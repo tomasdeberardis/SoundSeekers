@@ -26,12 +26,12 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(req -> req.requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/*").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/events/*").permitAll()
-                .requestMatchers("/error/**").permitAll()
-                .anyRequest()
-                .authenticated())
+                    .requestMatchers("/api/v1/auth/**").permitAll()      // Public authentication endpoints
+                    .requestMatchers("/api/user-interactions/**").permitAll() // Allow user interaction endpoints
+                    .requestMatchers("/api/events/**").permitAll()
+                    .requestMatchers("/api/recommendations/**").permitAll()  // Public event endpoints
+                    .requestMatchers("/error/**").permitAll()            // Allow error pages
+                    .anyRequest().authenticated())            // Secure all other requests
             .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

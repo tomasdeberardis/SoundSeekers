@@ -137,4 +137,9 @@ public class EventService {
             eventDAO.update(event);
         }
     }
+
+    @Transactional
+    public List<Event> getEventsByUserAttendance(Long userId) {
+        return eventDAO.findEventsByUserId(userId);
+    }
 }
