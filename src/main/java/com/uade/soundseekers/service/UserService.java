@@ -11,7 +11,6 @@ import com.uade.soundseekers.entity.User;
 import com.uade.soundseekers.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,7 +53,7 @@ public class UserService {
             .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + userDTO.getLocalidadId()));
         user.setLocalidad(localidad);
 
-        Set<MusicGenre> generosMusicales = userDTO.getGenres().stream()
+        List<MusicGenre> generosMusicales = userDTO.getGenres().stream()
             .map(genre -> {
                 try {
                     return MusicGenre.valueOf(genre.toUpperCase());
@@ -62,7 +61,7 @@ public class UserService {
                     throw new RuntimeException("Invalid genre: " + genre);
                 }
             })
-            .collect(Collectors.toSet());
+            .collect(Collectors.toList());
         user.setGenerosMusicalesPreferidos(generosMusicales);
 
         userRepository.save(user);
@@ -86,7 +85,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + userDTO.getLocalidadId()));
             user.setLocalidad(localidad);
 
-            Set<MusicGenre> generosMusicales = userDTO.getGenres().stream()
+            List<MusicGenre> generosMusicales = userDTO.getGenres().stream()
                 .map(genre -> {
                     try {
                         return MusicGenre.valueOf(genre.toUpperCase());
@@ -94,7 +93,7 @@ public class UserService {
                         throw new RuntimeException("Invalid genre: " + genre);
                     }
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
             user.setGenerosMusicalesPreferidos(generosMusicales);
 
             userRepository.save(user);

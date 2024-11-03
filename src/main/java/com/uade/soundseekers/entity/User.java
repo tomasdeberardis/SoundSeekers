@@ -14,8 +14,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -51,7 +49,7 @@ public class User implements UserDetails {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<MusicGenre> generosMusicalesPreferidos;
+    private List<MusicGenre> generosMusicalesPreferidos;
 
     @ManyToOne
     @JoinColumn(name = "localidad_id")
