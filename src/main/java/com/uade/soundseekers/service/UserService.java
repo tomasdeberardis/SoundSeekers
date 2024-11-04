@@ -51,7 +51,7 @@ public class UserService {
             user.setRole(Role.valueOf(userDTO.getRole()));
 
             Localidad localidad = localidadRepository.findById(userDTO.getLocalidadId())
-                .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + userDTO.getLocalidadId()));
+                .orElseThrow(() -> new RuntimeException("Localidad con ID " + userDTO.getLocalidadId()+" no existe"));
             user.setLocalidad(localidad);
 
             List<MusicGenre> generosMusicales = userDTO.getGenres().stream()
@@ -59,14 +59,14 @@ public class UserService {
                     try {
                         return MusicGenre.valueOf(genre.toUpperCase());
                     } catch (IllegalArgumentException e) {
-                        throw new RuntimeException("Invalid genre: " + genre);
+                        throw new RuntimeException("Género Inválido: " + genre);
                     }
                 })
                 .collect(Collectors.toList());
             user.setGenerosMusicalesPreferidos(generosMusicales);
 
             userRepository.save(user);
-            return new MessageResponseDto("User updated successfully.");
+            return new MessageResponseDto("Usuario actualizado exitosamente.");
         } else {
             throw new RuntimeException("Usuario no encontrado con el ID: " + id);
         }
@@ -75,6 +75,6 @@ public class UserService {
     // Eliminar un usuario por ID
     public MessageResponseDto deleteUser(Long id) {
         userRepository.deleteById(id);
-        return new MessageResponseDto("User deleted successfully.");
+        return new MessageResponseDto("Usuario eliminado exitosamente.");
     }
 }

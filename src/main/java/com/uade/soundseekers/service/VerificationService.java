@@ -42,7 +42,7 @@ public class VerificationService {
         
         user.setEmailVerified(true);
         userRepository.save(user);
-        return new MessageResponseDto("Email verified successfully");
+        return new MessageResponseDto("Email verficiado exitosamente");
     }
 
     public MessageResponseDto resendVerification(String email) {
@@ -69,8 +69,8 @@ public class VerificationService {
         try {
             emailSender.sendVerificationEmail(user.getEmail(), token);
         } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send verification email", e);
+            throw new RuntimeException("Error al enviar el correo de verificación", e);
         }
-        return new MessageResponseDto("Verification email sent successfully");
+        return new MessageResponseDto("Correo de verificación enviado exitosamente.");
     }
 }

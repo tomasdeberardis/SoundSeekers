@@ -72,7 +72,7 @@ public class AuthenticationService {
             .build();
 
         Localidad localidad = localidadRepository.findById(request.getLocalidadId())
-            .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + request.getLocalidadId()));
+            .orElseThrow(() -> new RuntimeException("Localidad con ID: " + request.getLocalidadId()+" no existe"));
         user.setLocalidad(localidad);
 
         List<MusicGenre> generosMusicales = request.getGenerosMusicalesPreferidos().stream()
@@ -80,7 +80,7 @@ public class AuthenticationService {
                 try {
                     return MusicGenre.valueOf(genre.name().toUpperCase());
                 } catch (IllegalArgumentException e) {
-                    throw new RuntimeException("Invalid genre: " + genre);
+                    throw new RuntimeException("Género inválido: " + genre);
                 }
             })
             .collect(Collectors.toList());
@@ -100,7 +100,7 @@ public class AuthenticationService {
         try {
             emailSender.sendVerificationEmail(user.getEmail(), token);
         } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send verification email", e);
+            throw new RuntimeException("Error al enviar el correo de verificación", e);
         }
 
         return new MessageResponseDto("Usuario registrado con éxito. Se ha enviado un email de verificación a " + user.getEmail());

@@ -1,7 +1,6 @@
 package com.uade.soundseekers.controllers;
 
-import com.uade.soundseekers.entity.Event;
-import com.uade.soundseekers.entity.EventInteraction;
+import com.uade.soundseekers.dto.MessageResponseDto;
 import com.uade.soundseekers.service.UserInteractionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,37 +18,30 @@ public class UserInteractionController {
 
     // Endpoint for recording a like on an event
     @PostMapping("/{userId}/events/{eventId}/like")
-    public ResponseEntity<String> recordLike(@PathVariable Long userId, @PathVariable Long eventId) {
-        userInteractionService.recordLike(userId, eventId); // Assuming Event has a constructor with ID
-        return ResponseEntity.ok("Like recorded successfully.");
+    public ResponseEntity<MessageResponseDto> recordLike(@PathVariable Long userId, @PathVariable Long eventId) {
+        return ResponseEntity.ok(userInteractionService.recordLike(userId, eventId));
     }
 
     @DeleteMapping("/{userId}/events/{eventId}/like")
-    public ResponseEntity<String> deleteLike(@PathVariable Long userId, @PathVariable Long eventId) {
-        userInteractionService.toggleLike(userId, eventId);
-        return ResponseEntity.ok("Like removed successfully.");
+    public ResponseEntity<MessageResponseDto> deleteLike(@PathVariable Long userId, @PathVariable Long eventId) {
+        return ResponseEntity.ok(userInteractionService.toggleLike(userId, eventId));
     }
- 
-
 
     // Endpoint for recording an assist on an event
     @PostMapping("/{userId}/events/{eventId}/assist")
-    public ResponseEntity<String> recordAssist(@PathVariable Long userId, @PathVariable Long eventId) {
-        userInteractionService.recordAssist(userId, eventId);
-        return ResponseEntity.ok("Assist recorded successfully.");
+    public ResponseEntity<MessageResponseDto> recordAssist(@PathVariable Long userId, @PathVariable Long eventId) {
+        return ResponseEntity.ok(userInteractionService.recordAssist(userId, eventId));
     }
 
     // Endpoint for recording a search query
     @PostMapping("/{userId}/search")
-    public ResponseEntity<String> recordSearch(
+    public ResponseEntity<MessageResponseDto> recordSearch(
             @PathVariable Long userId,
             @RequestParam(required = false) List<String> genres,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) LocalDateTime startDateTime,
             @RequestParam(required = false) LocalDateTime endDateTime) {
-
-        userInteractionService.recordSearch(userId, genres, minPrice, maxPrice, startDateTime, endDateTime);
-        return ResponseEntity.ok("Search query recorded successfully.");
+        return ResponseEntity.ok(userInteractionService.recordSearch(userId, genres, minPrice, maxPrice, startDateTime, endDateTime));
     }
 }

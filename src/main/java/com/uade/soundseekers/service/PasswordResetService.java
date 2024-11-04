@@ -49,7 +49,7 @@ public class PasswordResetService {
         try {
             emailSender.sendPasswordResetEmail(user.getEmail(), token);
         } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send verification email", e);
+            throw new RuntimeException("Error al enviar el correo de verificación", e);
         }
         return new MessageResponseDto("El token para restablecer la contraseña se ha enviado correctamente");
     }

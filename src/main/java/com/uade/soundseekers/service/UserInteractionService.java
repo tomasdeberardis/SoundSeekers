@@ -1,5 +1,6 @@
 package com.uade.soundseekers.service;
 
+import com.uade.soundseekers.dto.MessageResponseDto;
 import com.uade.soundseekers.entity.*;
 import com.uade.soundseekers.repository.EventDAOImpl;
 import com.uade.soundseekers.repository.EventInteractionRepository;
@@ -30,17 +31,17 @@ public class UserInteractionService {
     private UserRepository userRepository;
 
     @Transactional
-    public void recordLike(Long userId, Long eventId) {
+    public MessageResponseDto recordLike(Long userId, Long eventId) {
         Optional<User> userOpt = userRepository.findById(userId);
         Optional<Event> eventOpt = eventRepository.findById(eventId);
-    
+
         if (userOpt.isPresent() && eventOpt.isPresent()) {
             User user = userOpt.get();
             Event event = eventOpt.get();
-    
+
             // Buscar la interacción existente
             Optional<EventInteraction> existingInteraction = interactionRepository.findByUserAndEvent(user, event);
-    
+
             if (existingInteraction.isPresent()) {
                 // Si existe, actualizar el estado de "like"
                 EventInteraction interaction = existingInteraction.get();
@@ -53,83 +54,86 @@ public class UserInteractionService {
                 interactionRepository.save(newInteraction);
             }
         } else {
-            throw new IllegalArgumentException("Invalid userId or eventId");
+            throw new IllegalArgumentException("Usuario o evento inválido");
         }
+
+        return new MessageResponseDto("Like registrado exitosamente.");
     }
-    
 
     @Transactional
-    public void toggleLike(Long userId, Long eventId) {
+    public MessageResponseDto toggleLike(Long userId, Long eventId) {
         Optional<User> userOpt = userRepository.findById(userId);
         Optional<Event> eventOpt = eventRepository.findById(eventId);
-    
+
         if (userOpt.isPresent() && eventOpt.isPresent()) {
             User user = userOpt.get();
             Event event = eventOpt.get();
-            
+
             // Buscar la interacción existente
             Optional<EventInteraction> interactionOpt = interactionRepository.findByUserAndEvent(user, event);
-            
+
             if (interactionOpt.isPresent()) {
                 EventInteraction interaction = interactionOpt.get();
                 // Cambiar el estado de like
                 interaction.setLiked(false); // Cambiar a 0
                 interactionRepository.save(interaction);
             } else {
-                throw new IllegalArgumentException("No interaction found for the given user and event.");
+                throw new IllegalArgumentException("No se encontró like para el usuario y el evento");
             }
         } else {
-            throw new IllegalArgumentException("Invalid userId or eventId");
+            throw new IllegalArgumentException("Usuario o evento inválido");
         }
+
+        return new MessageResponseDto("Like eliminado exitosamente.");
     }
-    
+
 
     @Transactional
-public void recordAssist(Long userId, Long eventId) {
-    Optional<User> userOpt = userRepository.findById(userId);
-    Optional<Event> eventOpt = eventRepository.findById(eventId);
+    public MessageResponseDto recordAssist(Long userId, Long eventId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
 
-    if (userOpt.isPresent() && eventOpt.isPresent()) {
-        User user = userOpt.get();
-        Event event = eventOpt.get();
+        if (userOpt.isPresent() && eventOpt.isPresent()) {
+            User user = userOpt.get();
+            Event event = eventOpt.get();
 
-        // Verificar si ya existe una interacción para el usuario y el evento
-        Optional<EventInteraction> interactionOpt = interactionRepository.findByUserAndEvent(user, event);
+            // Verificar si ya existe una interacción para el usuario y el evento
+            Optional<EventInteraction> interactionOpt = interactionRepository.findByUserAndEvent(user, event);
 
-        if (interactionOpt.isPresent()) {
-            // Si existe, puedes decidir qué hacer. Aquí podrías optar por actualizar el estado de asistencia.
-            EventInteraction interaction = interactionOpt.get();
-            interaction.setAssisted(true); // Marcar como asistido
-            interactionRepository.save(interaction);
+            if (interactionOpt.isPresent()) {
+                // Si existe, puedes decidir qué hacer. Aquí podrías optar por actualizar el estado de asistencia.
+                EventInteraction interaction = interactionOpt.get();
+                interaction.setAssisted(true); // Marcar como asistido
+                interactionRepository.save(interaction);
+            } else {
+                // Si no existe, crear una nueva interacción
+                EventInteraction newInteraction = new EventInteraction(user, event, false, true, LocalDateTime.now());
+                interactionRepository.save(newInteraction);
+            }
+
+            // Agregar al usuario en la lista de asistentes del evento
+            event.getAttendees().add(user);
+            eventRepository.save(event);
         } else {
-            // Si no existe, crear una nueva interacción
-            EventInteraction newInteraction = new EventInteraction(user, event, false, true, LocalDateTime.now());
-            interactionRepository.save(newInteraction);
+            throw new IllegalArgumentException("Usuario o evento inválido");
         }
 
-        // Agregar al usuario en la lista de asistentes del evento
-        event.getAttendees().add(user);
-        eventRepository.save(event);
-    } else {
-        throw new IllegalArgumentException("Invalid userId or eventId");
+        return new MessageResponseDto("Asistencia registrada exitosamente.");
     }
-}
 
-    
-    
-    public void recordSearch(Long userId, List<String> genreStrings, Double minPrice, Double maxPrice, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public MessageResponseDto recordSearch(Long userId, List<String> genreStrings, Double minPrice, Double maxPrice, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         Optional<User> userOpt = userRepository.findById(userId);
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            List<MusicGenre> genres = genreStrings != null
-                    ? genreStrings.stream().map(MusicGenre::valueOf).collect(Collectors.toList())
-                    : null;
+            List<MusicGenre> genres = genreStrings != null ? genreStrings.stream().map(MusicGenre::valueOf).collect(Collectors.toList()) : null;
 
             SearchQuery searchQuery = new SearchQuery(user, genres, minPrice, maxPrice, startDateTime, endDateTime, LocalDateTime.now());
             searchQueryRepository.save(searchQuery);
         } else {
-            throw new IllegalArgumentException("Invalid userId");
+            throw new IllegalArgumentException("Usuario inválido");
         }
+
+        return new MessageResponseDto("Búsqueda guardada exitosamente.");
     }
 }
