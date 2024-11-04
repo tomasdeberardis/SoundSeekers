@@ -121,6 +121,35 @@ public class UserInteractionService {
         return new MessageResponseDto("Asistencia registrada exitosamente.");
     }
 
+
+    @Transactional
+    public MessageResponseDto toggleAssist(Long userId, Long eventId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+
+        if (userOpt.isPresent() && eventOpt.isPresent()) {
+            User user = userOpt.get();
+            Event event = eventOpt.get();
+
+            // Buscar la interacción existente
+            Optional<EventInteraction> interactionOpt = interactionRepository.findByUserAndEvent(user, event);
+
+            if (interactionOpt.isPresent()) {
+                EventInteraction interaction = interactionOpt.get();
+                // Cambiar el estado de like
+                interaction.setAssisted(false); // Cambiar a 0
+                interactionRepository.save(interaction);
+            } else {
+                throw new IllegalArgumentException("No se encontró asistencia para el usuario y el evento");
+            }
+        } else {
+            throw new IllegalArgumentException("Usuario o evento inválido");
+        }
+
+        return new MessageResponseDto("Asistencia eliminada exitosamente.");
+    }
+
+
     public MessageResponseDto recordSearch(Long userId, List<String> genreStrings, Double minPrice, Double maxPrice, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         Optional<User> userOpt = userRepository.findById(userId);
 

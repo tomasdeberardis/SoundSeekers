@@ -33,6 +33,10 @@ public class UserInteractionController {
         return ResponseEntity.ok(userInteractionService.recordAssist(userId, eventId));
     }
 
+    @DeleteMapping("/{userId}/events/{eventId}/assist")
+    public ResponseEntity<MessageResponseDto> deleteAssist(@PathVariable Long userId, @PathVariable Long eventId) {
+        return ResponseEntity.ok(userInteractionService.toggleAssist(userId, eventId));
+    }
     // Endpoint for recording a search query
     @PostMapping("/{userId}/search")
     public ResponseEntity<MessageResponseDto> recordSearch(
