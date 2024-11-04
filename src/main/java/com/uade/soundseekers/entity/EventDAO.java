@@ -14,4 +14,5 @@ public interface EventDAO {
     List<Event> findByProximity(Double lat, Double lng, Double radius);
 
     List<Event> findEventsByUserId(Long userId);
+    List<Event> findLikesByUserId(Long userId);
 }

@@ -138,4 +138,9 @@ public class EventService {
     public List<Event> getEventsByUserAttendance(Long userId) {
         return eventDAO.findEventsByUserId(userId);
     }
+
+    @Transactional
+    public List<Event> getEventsByUserLikes(Long userId) {
+        return eventDAO.findLikesByUserId(userId);
+    }
 }

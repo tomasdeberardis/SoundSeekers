@@ -120,4 +120,11 @@ public class EventDAOImpl implements EventDAO {
                 .setParameter("userId", userId)
                 .getResultList();
     }
+
+    public List<Event> findLikesByUserId(Long userId) {
+        String query = "SELECT e FROM Event e JOIN e.likes u WHERE u.id = :userId";
+        return entityManager.createQuery(query, Event.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
 }

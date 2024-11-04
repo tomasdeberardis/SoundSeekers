@@ -90,4 +90,9 @@ public class EventController {
     public List<Event> getEventsByUserAttendance(@PathVariable Long userId) {
         return eventService.getEventsByUserAttendance(userId);
     }
+
+    @GetMapping("/user/{userId}/likes")
+    public List<Event> getEventsByUserLike(@PathVariable Long userId) {
+        return eventService.getEventsByUserLikes(userId);
+    }
 }

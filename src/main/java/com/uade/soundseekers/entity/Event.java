@@ -39,6 +39,10 @@ public class Event {
     @JoinTable(name = "event_users", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> attendees = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "event_likes_users", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> likes = new ArrayList<>();
+
     @ElementCollection(targetClass = MusicGenre.class)
     @Enumerated(EnumType.STRING)
     private List<MusicGenre> genres = new ArrayList<>();
