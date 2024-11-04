@@ -35,36 +35,6 @@ public class UserService {
     // Obtener un usuario por nombre de usuario
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
-
-    // Crear o guardar un nuevo usuario
-    public MessageResponseDto createUser(UserDTO userDTO) {
-        User user = new User();
-        user.setEmail(userDTO.getEmail());
-        user.setName(userDTO.getName());
-        user.setPassword(userDTO.getPassword());
-        user.setLastName(userDTO.getLastName());
-        user.setUsername(userDTO.getUsername());
-        user.setEdad(userDTO.getEdad());
-        user.setEmailVerified(false);
-        user.setRole(Role.valueOf(userDTO.getRole()));
-
-        Localidad localidad = localidadRepository.findById(userDTO.getLocalidadId())
-            .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + userDTO.getLocalidadId()));
-        user.setLocalidad(localidad);
-
-        List<MusicGenre> generosMusicales = userDTO.getGenres().stream()
-            .map(genre -> {
-                try {
-                    return MusicGenre.valueOf(genre.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    throw new RuntimeException("Invalid genre: " + genre);
-                }
-            })
-            .collect(Collectors.toList());
-        user.setGenerosMusicalesPreferidos(generosMusicales);
-
-        userRepository.save(user);
-        return new MessageResponseDto("User created successfully.");
     }
 
     // Actualizar un usuario existente

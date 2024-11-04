@@ -57,19 +57,20 @@ public class PasswordResetService {
     public MessageResponseDto resetPassword(PasswordResetRequestDto request) {
         Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
         if (optionalUser.isEmpty()) {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("No existe un usuario con ese email");
         }
 
-        VerificationToken verificationToken = tokenRepository.findByToken(request.getToken());
-        if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now()) || !verificationToken.getUser().getEmail().equals(request.getEmail())) {
-            throw new BadRequestException("Invalid token");
+        User user = optionalUser.get();
+
+        VerificationToken verificationToken = tokenRepository.findByUser(user);
+        if (!verificationToken.getToken().equals(request.getToken()) || verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("Token inválido");
         }
 
         if (!isValidPassword(request.getPassword())) {
             throw new BadRequestException("La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.");
         }
 
-        User user = verificationToken.getUser();
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
         return new MessageResponseDto("Contraseña restablecida correctamente");
