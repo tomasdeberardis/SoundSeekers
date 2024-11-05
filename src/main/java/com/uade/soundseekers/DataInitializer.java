@@ -1,19 +1,19 @@
 package com.uade.soundseekers;
 
 import com.uade.soundseekers.dto.EventDTO;
-import com.uade.soundseekers.dto.UserDTO;
 import com.uade.soundseekers.entity.Localidad;
+import com.uade.soundseekers.entity.MusicGenre;
+import com.uade.soundseekers.entity.Role;
 import com.uade.soundseekers.entity.User;
+import com.uade.soundseekers.repository.UserRepository;
 import com.uade.soundseekers.service.EventService;
 import com.uade.soundseekers.service.LocalidadService;
-import com.uade.soundseekers.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -22,10 +22,10 @@ public class DataInitializer implements CommandLineRunner {
     private EventService eventService;
 
     @Autowired
-    private UserService userService;
+    private LocalidadService localidadService;
 
     @Autowired
-    private LocalidadService localidadService;
+    private UserRepository userRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -80,49 +80,46 @@ public class DataInitializer implements CommandLineRunner {
 
         localidadService.saveAll(localidades);
 
-        UserDTO user1DTO = UserDTO.builder()
+        User user1 = User.builder()
+            .email("juan.perez@gmail.com")
             .name("Juan")
+            .password("Password123")
             .lastName("Pérez")
             .username("juanp")
-            .email("juan.perez@gmail.com")
-            .password("password123")
             .edad(25)
-            .role("ARTIST")
-            .localidadId(1L)
-            .genres(List.of("CUARTETO", "POP"))
+            .isEmailVerified(true)
+            .role(Role.ARTIST)
+            .localidad(localidades.getFirst())
+            .generosMusicalesPreferidos(List.of(MusicGenre.CUARTETO, MusicGenre.POP))
             .build();
 
-        UserDTO user2DTO = UserDTO.builder()
+        User user2 = User.builder()
+            .email("maria.gomez@gmail.com")
             .name("Maria")
+            .password("Password123")
             .lastName("Gomez")
             .username("mariag")
-            .email("maria.gomez@gmail.com")
-            .password("password123")
             .edad(30)
-            .role("ARTIST")
-            .localidadId(3L)
-            .genres(List.of("ROCK", "FUSION"))
+            .isEmailVerified(true)
+            .role(Role.ARTIST)
+            .localidad(localidades.get(3))
+            .generosMusicalesPreferidos(List.of(MusicGenre.ROCK, MusicGenre.FOLKLORE))
             .build();
 
-        UserDTO user3DTO = UserDTO.builder()
+        User user3 = User.builder()
+            .email("carlos.lopez@gmail.com")
             .name("Carlos")
+            .password("Password123")
             .lastName("Lopez")
             .username("carlosl")
-            .email("carlos.lopez@gmail.com")
-            .password("password123")
             .edad(28)
-            .role("CLIENT")
-            .localidadId(8L)
-            .genres(List.of("REGGAE", "POP"))
+            .isEmailVerified(true)
+            .role(Role.CLIENT)
+            .localidad(localidades.get(8))
+            .generosMusicalesPreferidos(List.of(MusicGenre.RUMBA, MusicGenre.INDIE))
             .build();
 
-        userService.createUser(user1DTO);
-        userService.createUser(user2DTO);
-        userService.createUser(user3DTO);
-
-        Optional<User> user1 = userService.getUserByUsername("juanp");
-        Optional<User> user2 = userService.getUserByUsername("mariag");
-        Optional<User> user3 = userService.getUserByUsername("carlosl");
+        userRepository.saveAll(List.of(user1, user2, user3));
 
         // Create Events
         EventDTO event1DTO = EventDTO.builder()
@@ -133,7 +130,7 @@ public class DataInitializer implements CommandLineRunner {
             .dateTime(LocalDateTime.of(2024, 10, 10, 21, 0))
             .price(1500.0)
             .genres(List.of("ROCK"))
-            .organizerId(user1.get().getId())
+            .organizerId(user1.getId())
             .imageIds(List.of())
             .localidadId(1L)
             .build();
@@ -146,7 +143,7 @@ public class DataInitializer implements CommandLineRunner {
             .dateTime(LocalDateTime.of(2024, 11, 5, 19, 0))
             .price(2000.0)
             .genres(List.of("JAZZ"))
-            .organizerId(user1.get().getId())
+            .organizerId(user1.getId())
             .localidadId(12L)
             .build();
 
@@ -158,7 +155,7 @@ public class DataInitializer implements CommandLineRunner {
             .dateTime(LocalDateTime.of(2024, 12, 20, 23, 0))
             .price(1000.0)
             .genres(List.of("CUMBIA"))
-            .organizerId(user1.get().getId())
+            .organizerId(user1.getId())
             .localidadId(8L)
             .build();
 
@@ -170,7 +167,7 @@ public class DataInitializer implements CommandLineRunner {
             .dateTime(LocalDateTime.of(2024, 10, 31, 22, 0))
             .price(3000.0)
             .genres(List.of("ELECTRONICA"))
-            .organizerId(user1.get().getId())
+            .organizerId(user1.getId())
             .localidadId(9L)
             .build();
 
@@ -182,7 +179,7 @@ public class DataInitializer implements CommandLineRunner {
             .dateTime(LocalDateTime.of(2024, 10, 25, 20, 0))
             .price(1800.0)
             .genres(List.of("REGGAE"))
-            .organizerId(user2.get().getId())
+            .organizerId(user2.getId())
             .localidadId(13L)
             .build();
 
@@ -194,7 +191,7 @@ public class DataInitializer implements CommandLineRunner {
             .dateTime(LocalDateTime.of(2024, 11, 15, 19, 30))
             .price(2200.0)
             .genres(List.of("TANGO"))
-            .organizerId(user2.get().getId())
+            .organizerId(user2.getId())
             .localidadId(10L)
             .build();
 
@@ -206,7 +203,7 @@ public class DataInitializer implements CommandLineRunner {
             .dateTime(LocalDateTime.of(2024, 12, 5, 23, 0))
             .price(2500.0)
             .genres(List.of("RUMBA"))
-            .organizerId(user2.get().getId())
+            .organizerId(user2.getId())
             .localidadId(7L)
             .build();
 

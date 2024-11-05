@@ -1,7 +1,10 @@
 package com.uade.soundseekers.controllers.auth;
 
+import com.uade.soundseekers.dto.MessageResponseDto;
+import com.uade.soundseekers.dto.PasswordResetRequestDto;
 import com.uade.soundseekers.service.PasswordResetService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,14 +16,14 @@ public class PasswordResetController {
     private final PasswordResetService passwordResetService;
 
     @PostMapping("/forgot-password")
-    public String forgotPassword(@RequestParam("email") String email) {
-        passwordResetService.sendPasswordResetToken(email);
-        return "Password reset token sent to email";
+    public ResponseEntity<MessageResponseDto> forgotPassword(@RequestParam("email") String email) {
+        MessageResponseDto response = passwordResetService.sendPasswordResetToken(email);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/reset-password")
-    public String resetPassword(@RequestParam("token") String token, @RequestParam("newPassword") String newPassword) {
-        passwordResetService.resetPassword(token, newPassword);
-        return "Password reset successfully";
+    public ResponseEntity<MessageResponseDto> resetPassword(@RequestBody PasswordResetRequestDto request) {
+        MessageResponseDto response = passwordResetService.resetPassword(request);
+        return ResponseEntity.ok(response);
     }
 }

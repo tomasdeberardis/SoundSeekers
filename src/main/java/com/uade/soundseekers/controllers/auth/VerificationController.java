@@ -1,5 +1,6 @@
 package com.uade.soundseekers.controllers.auth;
 
+import com.uade.soundseekers.dto.MessageResponseDto;
 import com.uade.soundseekers.service.VerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +13,13 @@ public class VerificationController {
 
     private final VerificationService verificationService;
 
-    // @PostMapping("/verify")
-    //  public String verifyEmail(@RequestParam("token") String token) {
-        //return verificationService.verifyEmail(token);
-        // }
+    @PostMapping("/verify")
+    public MessageResponseDto verifyEmail(@RequestParam("token") String token, @RequestParam("email") String email) {
+        return verificationService.verifyEmail(token, email);
+    }
+
+    @PostMapping("/resend-verification")
+    public MessageResponseDto resendVerification(@RequestParam("email") String email) {
+        return verificationService.resendVerification(email);
+    }
 }

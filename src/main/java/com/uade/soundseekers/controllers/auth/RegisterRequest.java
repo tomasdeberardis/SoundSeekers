@@ -11,7 +11,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.List;
+
 import java.util.Set;
+
 
 @Data
 @Builder
@@ -20,24 +23,25 @@ import java.util.Set;
 @CrossOrigin(origins = "http://front-seminario.s3-website.us-east-2.amazonaws.com/")
 public class RegisterRequest {
 
-    @NotBlank(message = "Email is mandatory")
+    @NotBlank(message = "El Email es obligatorio")
     private String email;
 
-    @NotBlank(message = "Name is mandatory")
+    @NotBlank(message = "El nombre de usuario es obligatorio")
     private String username;
 
-    @NotBlank(message = "Name is mandatory")
+    @NotBlank(message = "El nombre es obligatorio")
     private String name;
 
-    @NotBlank(message = "Lastname is mandatory")
+    @NotBlank(message = "El apellido es obligatorio")
     private String lastName;
 
-    @Min(value = 0, message = "Edad must be a positive number")
+    @Min(value = 0, message = "La edad debe ser mayor a 0")
     private int edad;
 
-    @NotBlank(message = "Password is mandatory")
+    @NotBlank(message = "La contraseña es obligatoria")
     private String password;
 
     private Role role;
-    private Set<MusicGenre> generosMusicalesPreferidos;
+    private List<MusicGenre> generosMusicalesPreferidos;
+    private Long localidadId;
 }

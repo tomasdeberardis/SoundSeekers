@@ -11,7 +11,6 @@ import com.uade.soundseekers.entity.User;
 import com.uade.soundseekers.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,37 +37,6 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    // Crear o guardar un nuevo usuario
-    public MessageResponseDto createUser(UserDTO userDTO) {
-        User user = new User();
-        user.setEmail(userDTO.getEmail());
-        user.setName(userDTO.getName());
-        user.setPassword(userDTO.getPassword());
-        user.setLastName(userDTO.getLastName());
-        user.setUsername(userDTO.getUsername());
-        user.setEdad(userDTO.getEdad());
-        user.setEmailVerified(false);
-        user.setRole(Role.valueOf(userDTO.getRole()));
-
-        Localidad localidad = localidadRepository.findById(userDTO.getLocalidadId())
-            .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + userDTO.getLocalidadId()));
-        user.setLocalidad(localidad);
-
-        Set<MusicGenre> generosMusicales = userDTO.getGenres().stream()
-            .map(genre -> {
-                try {
-                    return MusicGenre.valueOf(genre.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    throw new RuntimeException("Invalid genre: " + genre);
-                }
-            })
-            .collect(Collectors.toSet());
-        user.setGenerosMusicalesPreferidos(generosMusicales);
-
-        userRepository.save(user);
-        return new MessageResponseDto("User created successfully.");
-    }
-
     // Actualizar un usuario existente
     public MessageResponseDto updateUser(Long id, UserDTO userDTO) {
         Optional<User> optionalUser = userRepository.findById(id);
@@ -83,22 +51,22 @@ public class UserService {
             user.setRole(Role.valueOf(userDTO.getRole()));
 
             Localidad localidad = localidadRepository.findById(userDTO.getLocalidadId())
-                .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + userDTO.getLocalidadId()));
+                .orElseThrow(() -> new RuntimeException("Localidad con ID " + userDTO.getLocalidadId()+" no existe"));
             user.setLocalidad(localidad);
 
-            Set<MusicGenre> generosMusicales = userDTO.getGenres().stream()
+            List<MusicGenre> generosMusicales = userDTO.getGenres().stream()
                 .map(genre -> {
                     try {
                         return MusicGenre.valueOf(genre.toUpperCase());
                     } catch (IllegalArgumentException e) {
-                        throw new RuntimeException("Invalid genre: " + genre);
+                        throw new RuntimeException("Género Inválido: " + genre);
                     }
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
             user.setGenerosMusicalesPreferidos(generosMusicales);
 
             userRepository.save(user);
-            return new MessageResponseDto("User updated successfully.");
+            return new MessageResponseDto("Usuario actualizado exitosamente.");
         } else {
             throw new RuntimeException("Usuario no encontrado con el ID: " + id);
         }
@@ -107,6 +75,6 @@ public class UserService {
     // Eliminar un usuario por ID
     public MessageResponseDto deleteUser(Long id) {
         userRepository.deleteById(id);
-        return new MessageResponseDto("User deleted successfully.");
+        return new MessageResponseDto("Usuario eliminado exitosamente.");
     }
 }

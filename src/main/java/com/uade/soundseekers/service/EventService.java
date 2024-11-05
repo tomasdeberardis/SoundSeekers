@@ -55,20 +55,16 @@ public class EventService {
             .map(genre -> MusicGenre.valueOf(genre.toUpperCase()))
             .collect(Collectors.toList()));
 
-        //Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
-          //  .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + eventDTO.getLocalidadId()));
-      //  event.setLocalidad(localidad);
-
         if (eventDTO.getLocalidadId() != null) {
             Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
-                    .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + eventDTO.getLocalidadId()));
+                    .orElseThrow(() -> new RuntimeException("Localidad con ID: " + eventDTO.getLocalidadId()+" no existe"));
             event.setLocalidad(localidad);
         } else {
-            event.setLocalidad(null); // Puedes omitir esto si ya está nulo por defecto
+            event.setLocalidad(null);
         }
 
         eventDAO.save(event);
-        return new MessageResponseDto("Event created successfully.");
+        return new MessageResponseDto("Evento creado exitosamente.");
     }
 
     // Editar un evento existente
@@ -86,22 +82,22 @@ public class EventService {
                 try {
                     return MusicGenre.valueOf(genre.toUpperCase());
                 } catch (IllegalArgumentException e) {
-                    throw new RuntimeException("Invalid genre: " + genre);
+                    throw new RuntimeException("Género Inválido: " + genre);
                 }
             })
             .collect(Collectors.toList()));
         Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
-            .orElseThrow(() -> new RuntimeException("Localidad not found with ID: " + eventDTO.getLocalidadId()));
+            .orElseThrow(() -> new RuntimeException("Localidad con ID: " + eventDTO.getLocalidadId()+" no existe"));
         event.setLocalidad(localidad);
         eventDAO.update(event);
-        return new MessageResponseDto("Event updated successfully.");
+        return new MessageResponseDto("Evento actualizado exitosamente.");
     }
 
     // Eliminar un evento
     @Transactional
     public MessageResponseDto deleteEvent(Long id) {
         eventDAO.deleteById(id);
-        return new MessageResponseDto("Event deleted successfully.");
+        return new MessageResponseDto("Evento eliminado exitosamente.");
 
     }
 
@@ -138,9 +134,20 @@ public class EventService {
         }
     }
 
+
     //listado de eventos por artista
     @Transactional
     public List<Event> getEventsByArtistId(Long artistId) {
     return eventDAO.findByArtistId(artistId);
+
+    @Transactional
+    public List<Event> getEventsByUserAttendance(Long userId) {
+        return eventDAO.findEventsByUserId(userId);
+    }
+
+    @Transactional
+    public List<Event> getEventsByUserLikes(Long userId) {
+        return eventDAO.findLikesByUserId(userId);
+
     }
 }

@@ -2,6 +2,8 @@ package com.uade.soundseekers.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Data
 @Entity
+@Getter
+@Setter
 @Table(name = "Event")
 public class Event {
 
@@ -34,6 +38,10 @@ public class Event {
     @ManyToMany
     @JoinTable(name = "event_users", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> attendees = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "event_likes_users", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> likes = new ArrayList<>();
 
     @ElementCollection(targetClass = MusicGenre.class)
     @Enumerated(EnumType.STRING)
