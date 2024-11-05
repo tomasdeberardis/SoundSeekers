@@ -86,6 +86,14 @@ public class EventController {
         return ResponseEntity.ok().build();
     }
 
+
+    //listado de eventos por artista
+    @GetMapping("/artist/{artistId}")
+    public ResponseEntity<List<Event>> getEventsByArtistId(@PathVariable Long artistId) {
+    List<Event> events = eventService.getEventsByArtistId(artistId);
+    return ResponseEntity.ok(events);
+}
+
     @GetMapping("/user/{userId}/attending")
     public List<Event> getEventsByUserAttendance(@PathVariable Long userId) {
         return eventService.getEventsByUserAttendance(userId);
@@ -95,4 +103,5 @@ public class EventController {
     public List<Event> getEventsByUserLike(@PathVariable Long userId) {
         return eventService.getEventsByUserLikes(userId);
     }
+
 }

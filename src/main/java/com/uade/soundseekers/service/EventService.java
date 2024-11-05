@@ -134,6 +134,12 @@ public class EventService {
         }
     }
 
+
+    //listado de eventos por artista
+    @Transactional
+    public List<Event> getEventsByArtistId(Long artistId) {
+    return eventDAO.findByArtistId(artistId);
+
     @Transactional
     public List<Event> getEventsByUserAttendance(Long userId) {
         return eventDAO.findEventsByUserId(userId);
@@ -142,5 +148,6 @@ public class EventService {
     @Transactional
     public List<Event> getEventsByUserLikes(Long userId) {
         return eventDAO.findLikesByUserId(userId);
+
     }
 }
