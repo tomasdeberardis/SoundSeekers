@@ -121,7 +121,7 @@ public class EventDAOImpl implements EventDAO {
     String queryStr = "SELECT e FROM Event e WHERE e.organizer.id = :artistId";
     TypedQuery<Event> query = entityManager.createQuery(queryStr, Event.class);
     query.setParameter("artistId", artistId);
-    return query.getResultList();
+    return query.getResultList();}
 
     public List<Event> findEventsByUserId(Long userId) {
         String query = "SELECT e FROM Event e JOIN e.attendees u WHERE u.id = :userId";
@@ -137,4 +137,4 @@ public class EventDAOImpl implements EventDAO {
                 .getResultList();
 
     }
-}
+};
