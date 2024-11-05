@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Set;
@@ -19,7 +20,6 @@ import java.util.Set;
 @Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @CrossOrigin(origins = "http://front-seminario.s3-website.us-east-2.amazonaws.com/")
 public class RegisterRequest {
 
@@ -44,4 +44,8 @@ public class RegisterRequest {
     private Role role;
     private List<MusicGenre> generosMusicalesPreferidos;
     private Long localidadId;
+
+    public RegisterRequest() {
+        this.generosMusicalesPreferidos = new ArrayList<>(); // Inicializa como lista vacía
+    }
 }
