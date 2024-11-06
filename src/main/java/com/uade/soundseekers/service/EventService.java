@@ -52,8 +52,8 @@ public class EventService {
         }
 
         event.setGenres(eventDTO.getGenres().stream()
-            .map(genre -> MusicGenre.valueOf(genre.toUpperCase()))
-            .collect(Collectors.toList()));
+                .map(genre -> MusicGenre.valueOf(genre.toUpperCase()))
+                .collect(Collectors.toList()));
 
         if (eventDTO.getLocalidadId() != null) {
             Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
@@ -78,16 +78,16 @@ public class EventService {
         event.setDateTime(eventDTO.getDateTime());
         event.setPrice(eventDTO.getPrice());
         event.setGenres(eventDTO.getGenres().stream()
-            .map(genre -> {
-                try {
-                    return MusicGenre.valueOf(genre.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    throw new RuntimeException("Género Inválido: " + genre);
-                }
-            })
-            .collect(Collectors.toList()));
+                .map(genre -> {
+                    try {
+                        return MusicGenre.valueOf(genre.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        throw new RuntimeException("Género Inválido: " + genre);
+                    }
+                })
+                .collect(Collectors.toList()));
         Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
-            .orElseThrow(() -> new RuntimeException("Localidad con ID: " + eventDTO.getLocalidadId()+" no existe"));
+                .orElseThrow(() -> new RuntimeException("Localidad con ID: " + eventDTO.getLocalidadId()+" no existe"));
         event.setLocalidad(localidad);
         eventDAO.update(event);
         return new MessageResponseDto("Evento actualizado exitosamente.");
@@ -134,8 +134,20 @@ public class EventService {
         }
     }
 
+
+    //listado de eventos por artista
+    @Transactional
+    public List<Event> getEventsByArtistId(Long artistId) {
+        return eventDAO.findByArtistId(artistId);}
+
     @Transactional
     public List<Event> getEventsByUserAttendance(Long userId) {
         return eventDAO.findEventsByUserId(userId);
     }
-}
+
+    @Transactional
+    public List<Event> getEventsByUserLikes(Long userId) {
+        return eventDAO.findLikesByUserId(userId);
+
+    }
+};
