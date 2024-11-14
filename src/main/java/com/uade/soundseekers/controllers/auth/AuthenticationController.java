@@ -3,6 +3,7 @@ package com.uade.soundseekers.controllers.auth;
 import com.uade.soundseekers.dto.AuthenticationRequest;
 import com.uade.soundseekers.dto.AuthenticationResponse;
 import com.uade.soundseekers.dto.MessageResponseDto;
+import com.uade.soundseekers.dto.RegisterRequestDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class AuthenticationController {
     private final AuthenticationService service;
 
     @PostMapping("/register")
-    public ResponseEntity<MessageResponseDto> register(@Validated @RequestBody RegisterRequest request) {
+    public ResponseEntity<MessageResponseDto> register(@Validated @RequestBody RegisterRequestDTO request) {
         return ResponseEntity.ok(service.register(request));
     }
 

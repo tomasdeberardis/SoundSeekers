@@ -7,9 +7,9 @@ import java.util.List;
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Integer> {
 
-    // Método para encontrar imágenes por nombre de imagen
+    // Metodo para encontrar imágenes por nombre de imagen
     List<Image> findByImageName(String imageName);
 
-    // Método para encontrar imágenes asociadas a un evento específico
+    // Metodo para encontrar imágenes asociadas a un evento específico
     List<Image> findByEventId(Long event_id);
 }

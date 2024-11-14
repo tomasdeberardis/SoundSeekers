@@ -1,4 +1,4 @@
-package com.uade.soundseekers.controllers.config;
+package com.uade.soundseekers.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

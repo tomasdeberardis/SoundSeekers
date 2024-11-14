@@ -1,4 +1,4 @@
-package com.uade.soundseekers.controllers.auth;
+package com.uade.soundseekers.dto;
 
 import com.uade.soundseekers.entity.MusicGenre;
 import com.uade.soundseekers.entity.Role;
@@ -13,15 +13,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
-import java.util.Set;
-
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @CrossOrigin(origins = "http://front-seminario.s3-website.us-east-2.amazonaws.com/")
-public class RegisterRequest {
+public class RegisterRequestDTO {
 
     @NotBlank(message = "El Email es obligatorio")
     private String email;

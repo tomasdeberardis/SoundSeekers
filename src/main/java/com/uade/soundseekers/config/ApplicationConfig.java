@@ -1,4 +1,4 @@
-package com.uade.soundseekers.controllers.config;
+package com.uade.soundseekers.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

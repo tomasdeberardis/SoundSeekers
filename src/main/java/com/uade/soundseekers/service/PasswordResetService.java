@@ -30,7 +30,7 @@ public class PasswordResetService {
     public MessageResponseDto sendPasswordResetToken(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isEmpty()) {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("No existe un usuario con ese email");
         }
         User user = optionalUser.get();
 

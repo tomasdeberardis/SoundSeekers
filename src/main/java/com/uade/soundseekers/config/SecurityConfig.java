@@ -1,5 +1,4 @@
-package com.uade.soundseekers.controllers.config;
-
+package com.uade.soundseekers.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

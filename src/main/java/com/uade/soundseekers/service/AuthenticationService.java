@@ -2,8 +2,8 @@ package com.uade.soundseekers.service;
 
 import com.uade.soundseekers.dto.AuthenticationRequest;
 import com.uade.soundseekers.dto.AuthenticationResponse;
-import com.uade.soundseekers.controllers.auth.RegisterRequest;
-import com.uade.soundseekers.controllers.config.JwtService;
+import com.uade.soundseekers.dto.RegisterRequestDTO;
+import com.uade.soundseekers.config.JwtService;
 import com.uade.soundseekers.dto.MessageResponseDto;
 import com.uade.soundseekers.entity.Localidad;
 import com.uade.soundseekers.entity.MusicGenre;
@@ -43,7 +43,7 @@ public class AuthenticationService {
     private static final String EMAIL_REGEX = "^(?!.*\\.\\..)(?!.*\\.$)(?!^\\.)[A-Za-z0-9][A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$"; //restricciones del mail
     private static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$"; // Minimum 8 characters, one uppercase, one lowercase, one number
 
-    public MessageResponseDto register(RegisterRequest request) {
+    public MessageResponseDto register(RegisterRequestDTO request) {
         if (!isValidEmail(request.getEmail())) {
             throw new BadRequestException("El email proporcionado no es válido.");
         }

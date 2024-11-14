@@ -1,13 +1,11 @@
 package com.uade.soundseekers.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @Entity
 public class EventInteraction {
     @Id
