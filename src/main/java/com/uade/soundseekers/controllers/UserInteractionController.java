@@ -38,15 +38,15 @@ public class UserInteractionController {
         return ResponseEntity.ok(userInteractionService.toggleAssist(userId, eventId));
     }
 
-    // Endpoint for recording a search query
     @PostMapping("/{userId}/search")
     public ResponseEntity<MessageResponseDto> recordSearch(
-        @PathVariable Long userId,
-        @RequestParam(required = false) List<String> genres,
-        @RequestParam(required = false) Double minPrice,
-        @RequestParam(required = false) Double maxPrice,
-        @RequestParam(required = false) LocalDateTime startDateTime,
-        @RequestParam(required = false) LocalDateTime endDateTime) {
-        return ResponseEntity.ok(userInteractionService.recordSearch(userId, genres, minPrice, maxPrice, startDateTime, endDateTime));
+            @PathVariable Long userId,
+            @RequestParam(required = false) List<String> genres,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) LocalDateTime startDateTime,
+            @RequestParam(required = false) LocalDateTime endDateTime,
+            @RequestParam(required = false) Long localidadId) { // Added localidadId
+        return ResponseEntity.ok(userInteractionService.recordSearch(userId, genres, minPrice, maxPrice, startDateTime, endDateTime, localidadId));
     }
 }

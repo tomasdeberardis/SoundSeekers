@@ -173,14 +173,15 @@ public MessageResponseDto toggleAssist(Long userId, Long eventId) {
 
 
 
-    public MessageResponseDto recordSearch(Long userId, List<String> genreStrings, Double minPrice, Double maxPrice, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public MessageResponseDto recordSearch(Long userId, List<String> genreStrings, Double minPrice, Double maxPrice, LocalDateTime startDateTime, LocalDateTime endDateTime, Long localidadId) {
         Optional<User> userOpt = userRepository.findById(userId);
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             List<MusicGenre> genres = genreStrings != null ? genreStrings.stream().map(MusicGenre::valueOf).collect(Collectors.toList()) : null;
 
-            SearchQuery searchQuery = new SearchQuery(user, genres, minPrice, maxPrice, startDateTime, endDateTime, LocalDateTime.now());
+            // Create and save the SearchQuery with localidadId
+            SearchQuery searchQuery = new SearchQuery(user, genres, minPrice, maxPrice, startDateTime, endDateTime, LocalDateTime.now(), localidadId);
             searchQueryRepository.save(searchQuery);
         } else {
             throw new IllegalArgumentException("Usuario inválido");

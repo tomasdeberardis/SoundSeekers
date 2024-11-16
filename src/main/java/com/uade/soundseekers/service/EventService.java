@@ -101,10 +101,9 @@ public class EventService {
 
     }
 
-    // Filtros avanzados
     @Transactional
-    public List<Event> getEventsByFilters(String name, List<MusicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
-        return eventDAO.findByAdvancedFilters(name, genres, startDate, endDate, minPrice, maxPrice);
+    public List<Event> getEventsByFilters(String name, List<MusicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice, Long localidadId) {
+        return eventDAO.findByAdvancedFilters(name, genres, startDate, endDate, minPrice, maxPrice, localidadId);
     }
 
     // Búsqueda de eventos por proximidad (latitud, longitud, radio)
