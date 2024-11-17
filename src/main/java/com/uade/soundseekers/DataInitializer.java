@@ -10,6 +10,7 @@ import com.uade.soundseekers.service.EventService;
 import com.uade.soundseekers.service.LocalidadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private LocalidadService localidadService;
+
+    @Autowired
+    private  PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -80,140 +84,79 @@ public class DataInitializer implements CommandLineRunner {
 
         localidadService.saveAll(localidades);
 
-        User user1 = User.builder()
-            .email("juan.perez@gmail.com")
-            .name("Juan")
-            .password("Password123")
-            .lastName("Pérez")
-            .username("juanp")
-            .edad(25)
-            .isEmailVerified(true)
-            .role(Role.ARTIST)
-            .localidad(localidades.getFirst())
-            .generosMusicalesPreferidos(List.of(MusicGenre.CUARTETO, MusicGenre.POP))
-            .build();
+        List<User> users = List.of(
+                createUser("juan.perez@gmail.com", "Juan", "Pérez", "juanp", 25, Role.ARTIST, localidades.get(0), List.of(MusicGenre.CUARTETO, MusicGenre.POP)),
+                createUser("maria.gomez@gmail.com", "Maria", "Gomez", "mariag", 30, Role.ARTIST, localidades.get(1), List.of(MusicGenre.ROCK, MusicGenre.FOLKLORE)),
+                createUser("carlos.lopez@gmail.com", "Carlos", "Lopez", "carlosl", 28, Role.CLIENT, localidades.get(2), List.of(MusicGenre.RUMBA, MusicGenre.INDIE)),
+                createUser("ana.martinez@gmail.com", "Ana", "Martinez", "anam", 22, Role.CLIENT, localidades.get(3), List.of(MusicGenre.SALSA, MusicGenre.HIP_HOP)),
+                createUser("pedro.fernandez@gmail.com", "Pedro", "Fernandez", "pedrof", 35, Role.ARTIST, localidades.get(4), List.of(MusicGenre.ELECTRONICA, MusicGenre.REGGAETON)),
+                createUser("laura.rodriguez@gmail.com", "Laura", "Rodriguez", "laurar", 26, Role.CLIENT, localidades.get(5), List.of(MusicGenre.BLUES, MusicGenre.PUNK)),
+                createUser("martin.sanchez@gmail.com", "Martin", "Sanchez", "martins", 31, Role.ARTIST, localidades.get(6), List.of(MusicGenre.TANGO, MusicGenre.JAZZ)),
+                createUser("sofia.diaz@gmail.com", "Sofia", "Diaz", "sofiad", 27, Role.CLIENT, localidades.get(7), List.of(MusicGenre.CLASICO, MusicGenre.ALTERNATIVE)),
+                createUser("lucas.perez@gmail.com", "Lucas", "Perez", "lucasp", 29, Role.ARTIST, localidades.get(8), List.of(MusicGenre.PUNK_ROCK, MusicGenre.GRUNGE)),
+                createUser("elena.moreno@gmail.com", "Elena", "Moreno", "elenam", 24, Role.CLIENT, localidades.get(9), List.of(MusicGenre.BOSSA_NOVA, MusicGenre.FUSION))
+        );
 
-        User user2 = User.builder()
-            .email("maria.gomez@gmail.com")
-            .name("Maria")
-            .password("Password123")
-            .lastName("Gomez")
-            .username("mariag")
-            .edad(30)
-            .isEmailVerified(true)
-            .role(Role.ARTIST)
-            .localidad(localidades.get(3))
-            .generosMusicalesPreferidos(List.of(MusicGenre.ROCK, MusicGenre.FOLKLORE))
-            .build();
+        userRepository.saveAll(users);
 
-        User user3 = User.builder()
-            .email("carlos.lopez@gmail.com")
-            .name("Carlos")
-            .password("Password123")
-            .lastName("Lopez")
-            .username("carlosl")
-            .edad(28)
-            .isEmailVerified(true)
-            .role(Role.CLIENT)
-            .localidad(localidades.get(8))
-            .generosMusicalesPreferidos(List.of(MusicGenre.RUMBA, MusicGenre.INDIE))
-            .build();
+        List<EventDTO> events = List.of(
+                createEventDTO("Concierto de Rock en Buenos Aires", "Una noche increíble de rock en vivo.", -34.603722, -58.381592, LocalDateTime.of(2024, 10, 10, 21, 0), 1500.0, List.of("ROCK"), users.get(0).getId(), localidades.get(0).getId()),
+                createEventDTO("Festival de Jazz en Balvanera", "Jazz en Balvanera.", -34.6099, -58.4053, LocalDateTime.of(2024, 11, 5, 19, 0), 2000.0, List.of("JAZZ"), users.get(1).getId(), localidades.get(1).getId()),
+                createEventDTO("Fiesta de Cumbia en Barracas", "Cumbia en Barracas.", -34.6372, -58.3831, LocalDateTime.of(2024, 12, 20, 23, 0), 1000.0, List.of("CUMBIA"), users.get(2).getId(), localidades.get(2).getId()),
+                createEventDTO("Fiesta Electrónica en Belgrano", "Música electrónica en Belgrano.", -34.5612, -58.4585, LocalDateTime.of(2024, 10, 31, 22, 0), 3000.0, List.of("ELECTRONICA"), users.get(3).getId(), localidades.get(3).getId()),
+                createEventDTO("Reggae en Boedo", "Reggae en Boedo.", -34.6261, -58.4174, LocalDateTime.of(2024, 10, 25, 20, 0), 1800.0, List.of("REGGAE"), users.get(4).getId(), localidades.get(4).getId()),
+                createEventDTO("Hip Hop en Caballito", "Hip Hop en Caballito.", -34.6197, -58.4306, LocalDateTime.of(2024, 12, 15, 22, 0), 1200.0, List.of("HIP_HOP"), users.get(5).getId(), localidades.get(5).getId()),
+                createEventDTO("Punk Rock en Chacarita", "Punk Rock en Chacarita.", -34.5871, -58.4582, LocalDateTime.of(2024, 11, 12, 22, 0), 800.0, List.of("PUNK_ROCK"), users.get(6).getId(), localidades.get(6).getId()),
+                createEventDTO("Folk en Coghlan", "Folk en Coghlan.", -34.5617, -58.4684, LocalDateTime.of(2024, 11, 25, 18, 0), 1500.0, List.of("FOLKLORE"), users.get(7).getId(), localidades.get(7).getId()),
+                createEventDTO("Tango en Colegiales", "Tango en Colegiales.", -34.5743, -58.4497, LocalDateTime.of(2024, 11, 10, 19, 0), 1000.0, List.of("TANGO"), users.get(8).getId(), localidades.get(8).getId()),
+                createEventDTO("Reggaetón en Constitución", "Ritmos de reggaetón en Constitución.", -34.6284, -58.3859, LocalDateTime.of(2024, 12, 22, 23, 30), 1500.0, List.of("REGGAETON"), users.get(9).getId(), localidades.get(9).getId()),
+                createEventDTO("Festival de Salsa en Flores", "Disfruta de un festival de salsa en Flores.", -34.6345, -58.4675, LocalDateTime.of(2024, 11, 18, 20, 0), 1300.0, List.of("SALSA"), users.get(0).getId(), localidades.get(10).getId()),
+                createEventDTO("Blues en Floresta", "Noche de blues en Floresta.", -34.6297, -58.4912, LocalDateTime.of(2024, 10, 20, 19, 0), 1400.0, List.of("BLUES"), users.get(1).getId(), localidades.get(11).getId()),
+                createEventDTO("Pop en La Boca", "Concierto de pop en La Boca.", -34.6348, -58.3633, LocalDateTime.of(2024, 12, 10, 21, 0), 1500.0, List.of("POP"), users.get(2).getId(), localidades.get(12).getId()),
+                createEventDTO("Noche de Indie en La Paternal", "Indie en vivo en La Paternal.", -34.5969, -58.4642, LocalDateTime.of(2024, 10, 18, 21, 0), 900.0, List.of("INDIE"), users.get(3).getId(), localidades.get(13).getId()),
+                createEventDTO("Festival Alternativo en Liniers", "Un festival de sonidos alternativos.", -34.6425, -58.5201, LocalDateTime.of(2024, 12, 8, 19, 0), 1100.0, List.of("ALTERNATIVE"), users.get(4).getId(), localidades.get(14).getId()),
+                createEventDTO("Cuarteto en Mataderos", "Un clásico cuarteto en Mataderos.", -34.6629, -58.5088, LocalDateTime.of(2024, 11, 18, 22, 0), 1000.0, List.of("CUARTETO"), users.get(5).getId(), localidades.get(15).getId()),
+                createEventDTO("Jazz en Monte Castro", "Una noche de jazz en Monte Castro.", -34.6129, -58.4965, LocalDateTime.of(2024, 11, 10, 18, 0), 1500.0, List.of("JAZZ"), users.get(6).getId(), localidades.get(16).getId()),
+                createEventDTO("Rumba en Monserrat", "Rumba en Monserrat.", -34.6113, -58.3807, LocalDateTime.of(2024, 12, 20, 23, 0), 1000.0, List.of("RUMBA"), users.get(7).getId(), localidades.get(17).getId()),
+                createEventDTO("Rock en Nueva Pompeya", "Concierto de rock en Nueva Pompeya.", -34.6458, -58.4249, LocalDateTime.of(2024, 11, 5, 19, 0), 2000.0, List.of("ROCK"), users.get(8).getId(), localidades.get(18).getId()),
+                createEventDTO("Clásicos en Nuñez", "Concierto de música clásica en Nuñez.", -34.5463, -58.4544, LocalDateTime.of(2024, 10, 28, 18, 0), 1600.0, List.of("CLASICO"), users.get(9).getId(), localidades.get(19).getId()),
+                createEventDTO("Festival de Fusion en Palermo", "Una mezcla de ritmos en Palermo.", -34.5826, -58.4329, LocalDateTime.of(2024, 11, 28, 21, 0), 1700.0, List.of("FUSION"), users.get(0).getId(), localidades.get(20).getId()),
+                createEventDTO("Festival de Tango en Parque Avellaneda", "Disfruta del tango en Parque Avellaneda.", -34.6424, -58.4805, LocalDateTime.of(2024, 11, 18, 22, 0), 1000.0, List.of("TANGO"), users.get(1).getId(), localidades.get(21).getId()),
+                createEventDTO("Noche de Música Latina en Parque Chacabuco", "Música latina en Parque Chacabuco.", -34.6355, -58.4409, LocalDateTime.of(2024, 12, 5, 23, 0), 1500.0, List.of("SALSA"), users.get(2).getId(), localidades.get(22).getId()),
+                createEventDTO("Punk en Parque Chas", "Punk en vivo en Parque Chas.", -34.5891, -58.4827, LocalDateTime.of(2024, 11, 8, 22, 0), 1200.0, List.of("PUNK"), users.get(3).getId(), localidades.get(23).getId()),
+                createEventDTO("Folk Moderno en Parque Patricios", "Folk moderno en Parque Patricios.", -34.6352, -58.4024, LocalDateTime.of(2024, 12, 12, 20, 0), 1300.0, List.of("FOLKLORE_MODERNO"), users.get(4).getId(), localidades.get(24).getId()),
+                createEventDTO("Jazz en Puerto Madero", "Jazz en vivo en Puerto Madero.", -34.6091, -58.3628, LocalDateTime.of(2024, 12, 22, 20, 0), 1500.0, List.of("JAZZ"), users.get(5).getId(), localidades.get(25).getId())
+        );
 
-        userRepository.saveAll(List.of(user1, user2, user3));
+        events.forEach(eventService::createEvent);
+    }
 
-        // Create Events
-        EventDTO event1DTO = EventDTO.builder()
-            .name("Concierto de Rock en Buenos Aires")
-            .description("Una noche increíble de rock en vivo.")
-            .latitude(-34.603722)
-            .longitude(-58.381592)
-            .dateTime(LocalDateTime.of(2024, 10, 10, 21, 0))
-            .price(1500.0)
-            .genres(List.of("ROCK"))
-            .organizerId(user1.getId())
-            .imageIds(List.of())
-            .localidadId(1L)
-            .build();
+    private User createUser(String email, String name, String lastName, String username, int age, Role role, Localidad localidad, List<MusicGenre> genres) {
+        return User.builder()
+                .email(email)
+                .name(name)
+                .password(passwordEncoder.encode("Password123"))
+                .lastName(lastName)
+                .username(username)
+                .edad(age)
+                .isEmailVerified(true)
+                .role(role)
+                .localidad(localidad)
+                .generosMusicalesPreferidos(genres)
+                .build();
+    }
 
-        EventDTO event2DTO = EventDTO.builder()
-            .name("Festival de Jazz en Palermo")
-            .description("Sonidos vibrantes de jazz en Palermo.")
-            .latitude(-34.571527)
-            .longitude(-58.423469)
-            .dateTime(LocalDateTime.of(2024, 11, 5, 19, 0))
-            .price(2000.0)
-            .genres(List.of("JAZZ"))
-            .organizerId(user1.getId())
-            .localidadId(12L)
-            .build();
-
-        EventDTO event3DTO = EventDTO.builder()
-            .name("Fiesta de Cumbia en La Plata")
-            .description("Baila toda la noche con los mejores hits de cumbia.")
-            .latitude(-34.921450)
-            .longitude(-57.954530)
-            .dateTime(LocalDateTime.of(2024, 12, 20, 23, 0))
-            .price(1000.0)
-            .genres(List.of("CUMBIA"))
-            .organizerId(user1.getId())
-            .localidadId(8L)
-            .build();
-
-        EventDTO event4DTO = EventDTO.builder()
-            .name("Fiesta Electrónica en Rosario")
-            .description("Disfruta la mejor música electrónica en Rosario.")
-            .latitude(-32.944244)
-            .longitude(-60.650539)
-            .dateTime(LocalDateTime.of(2024, 10, 31, 22, 0))
-            .price(3000.0)
-            .genres(List.of("ELECTRONICA"))
-            .organizerId(user1.getId())
-            .localidadId(9L)
-            .build();
-
-        EventDTO event5DTO = EventDTO.builder()
-            .name("Festival de Reggae en Córdoba")
-            .description("Vibra con los sonidos del reggae en Córdoba.")
-            .latitude(-31.416668)
-            .longitude(-64.183334)
-            .dateTime(LocalDateTime.of(2024, 10, 25, 20, 0))
-            .price(1800.0)
-            .genres(List.of("REGGAE"))
-            .organizerId(user2.getId())
-            .localidadId(13L)
-            .build();
-
-        EventDTO event6DTO = EventDTO.builder()
-            .name("Concierto de Música Clásica en Mendoza")
-            .description("Disfruta de una noche de música clásica en el corazón de Mendoza.")
-            .latitude(-32.889458)
-            .longitude(-68.845840)
-            .dateTime(LocalDateTime.of(2024, 11, 15, 19, 30))
-            .price(2200.0)
-            .genres(List.of("TANGO"))
-            .organizerId(user2.getId())
-            .localidadId(10L)
-            .build();
-
-        EventDTO event7DTO = EventDTO.builder()
-            .name("Fiesta de Reggaetón en Mar del Plata")
-            .description("Ven a disfrutar del mejor reggaetón en la playa.")
-            .latitude(-38.005477)
-            .longitude(-57.542611)
-            .dateTime(LocalDateTime.of(2024, 12, 5, 23, 0))
-            .price(2500.0)
-            .genres(List.of("RUMBA"))
-            .organizerId(user2.getId())
-            .localidadId(7L)
-            .build();
-
-        // Save Events
-        eventService.createEvent(event1DTO);
-        eventService.createEvent(event2DTO);
-        eventService.createEvent(event3DTO);
-        eventService.createEvent(event4DTO);
-        eventService.createEvent(event5DTO);
-        eventService.createEvent(event6DTO);
-        eventService.createEvent(event7DTO);
+    private EventDTO createEventDTO(String name, String description, double latitude, double longitude, LocalDateTime dateTime, double price, List<String> genres, Long organizerId, Long localidadId) {
+        return EventDTO.builder()
+                .name(name)
+                .description(description)
+                .latitude(latitude)
+                .longitude(longitude)
+                .dateTime(dateTime)
+                .price(price)
+                .genres(genres)
+                .organizerId(organizerId)
+                .localidadId(localidadId)
+                .build();
     }
 }

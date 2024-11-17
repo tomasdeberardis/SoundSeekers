@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/user-interactions/**").permitAll()
                 .requestMatchers("/error/**").permitAll()
                 .requestMatchers("/api/users/**").permitAll()
+                .requestMatchers("/api/recommendations/**").permitAll()
                 .anyRequest().authenticated())
             .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
             .authenticationProvider(authenticationProvider)

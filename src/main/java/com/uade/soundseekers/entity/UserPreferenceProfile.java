@@ -1,7 +1,6 @@
 package com.uade.soundseekers.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,17 +14,23 @@ public class UserPreferenceProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Convert(converter = GenrePreferenceConverter.class)
     private Map<MusicGenre, Integer> genrePreferences;
+
     @ElementCollection
     private Set<String> likedEvents; // Set of liked event IDs
+
     @ElementCollection
     private Set<String> assistedEvents; // Set of attended event IDs
 
-    public UserPreferenceProfile(Map<MusicGenre, Integer> genrePreferences, Set<String> likedEvents, Set<String> assistedEvents) {
-        this.genrePreferences=genrePreferences;
-        this.likedEvents=likedEvents;
-        this.assistedEvents=assistedEvents;
-    }
+    @ElementCollection
+    private Set<Long> preferredLocalidades; // Set of preferred localidad IDs
 
+    public UserPreferenceProfile(Map<MusicGenre, Integer> genrePreferences, Set<String> likedEvents, Set<String> assistedEvents, Set<Long> preferredLocalidades) {
+        this.genrePreferences = genrePreferences;
+        this.likedEvents = likedEvents;
+        this.assistedEvents = assistedEvents;
+        this.preferredLocalidades = preferredLocalidades;
+    }
 }
