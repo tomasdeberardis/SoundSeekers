@@ -64,7 +64,18 @@ public class UserInteractionController {
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) LocalDateTime startDateTime,
             @RequestParam(required = false) LocalDateTime endDateTime,
-            @RequestParam(required = false) Long localidadId) { // Added localidadId
-        return ResponseEntity.ok(userInteractionService.recordSearch(userId, genres, minPrice, maxPrice, startDateTime, endDateTime, localidadId));
+            @RequestParam(required = false) Long localidadId) {
+        try {
+            return ResponseEntity.ok(userInteractionService.recordSearch(userId, genres, minPrice, maxPrice, startDateTime, endDateTime, localidadId));
+        } catch (InvalidArgsException e) {
+            // Maneja error relacionado con parámetros inválidos
+            throw new InvalidArgsException("Error en los parámetros de búsqueda.");
+        } catch (NotFoundException e) {
+            // Maneja error si no se encuentra la búsqueda
+            throw new NotFoundException("No se encontraron resultados para la búsqueda.");
+        } catch (Exception e) {
+            // Captura cualquier otro error
+            throw new RuntimeException("Error inesperado al registrar la búsqueda.");
+        }
     }
 }

@@ -55,24 +55,52 @@ public class EventController {
     }
 
     @GetMapping("/filters")
-    public List<Event> getEventsByFilters(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) List<String> genres,
-            @RequestParam(required = false) LocalDateTime startDate,
-            @RequestParam(required = false) LocalDateTime endDate,
-            @RequestParam(required = false) Double minPrice,
-            @RequestParam(required = false) Double maxPrice,
-            @RequestParam(required = false) Long localidadId) {
+public List<Event> getEventsByFilters(
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) List<String> genres,
+        @RequestParam(required = false) LocalDateTime startDate,
+        @RequestParam(required = false) LocalDateTime endDate,
+        @RequestParam(required = false) Double minPrice,
+        @RequestParam(required = false) Double maxPrice,
+        @RequestParam(required = false) Long localidadId) {
 
-        List<MusicGenre> genreEnumList = null;
-        if (genres != null) {
+    // Validar los parámetros de entrada antes de procesarlos
+    if (genres != null && genres.isEmpty()) {
+        throw new InvalidArgsException("La lista de géneros no puede estar vacía.");
+    }
+
+    if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+        throw new InvalidArgsException("La fecha de inicio no puede ser posterior a la fecha de fin.");
+    }
+
+    if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+        throw new InvalidArgsException("El precio mínimo no puede ser mayor que el precio máximo.");
+    }
+
+    // Convierte los géneros a una lista de MusicGenre
+    List<MusicGenre> genreEnumList = null;
+    if (genres != null) {
+        try {
             genreEnumList = genres.stream()
                     .map(genre -> MusicGenre.valueOf(genre.toUpperCase()))
                     .collect(Collectors.toList());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidArgsException("Algunos géneros son inválidos.");
         }
-
-        return eventService.getEventsByFilters(name, genreEnumList, startDate, endDate, minPrice, maxPrice, localidadId);
     }
+
+    // Llama al servicio con los parámetros validados
+    try {
+        List<Event> events = eventService.getEventsByFilters(name, genreEnumList, startDate, endDate, minPrice, maxPrice, localidadId);
+        if (events.isEmpty()) {
+            throw new NotFoundException("No se encontraron eventos con los filtros proporcionados.");
+        }
+        return events;
+    } catch (Exception e) {
+        throw new RuntimeException("Error al recuperar eventos: " + e.getMessage(), e);
+    }
+}
+
 
     // Búsqueda de eventos por proximidad (latitud, longitud, radio)
     @GetMapping("/proximity")

@@ -1,11 +1,8 @@
 package com.uade.soundseekers.service;
 
 import com.uade.soundseekers.entity.*;
-import com.uade.soundseekers.exception.NotFoundException;
-import com.uade.soundseekers.repository.EventDAOImpl;
-import com.uade.soundseekers.repository.EventInteractionRepository;
-import com.uade.soundseekers.repository.SearchQueryRepository;
-import com.uade.soundseekers.repository.UserRepository;
+import com.uade.soundseekers.exception.*;
+import com.uade.soundseekers.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,33 +24,37 @@ public class RecommendationService {
     @Autowired
     private UserRepository userRepository;
 
-    // Builds user preference profile based on likes, assists, search history, localidad, and preferred genres
+    // Construye el perfil de preferencias del usuario basado en los 'likes', 'asiste', historial de búsquedas, localidad y géneros preferidos
     public UserPreferenceProfile buildUserProfile(Long userId) {
         Optional<User> userOpt = userRepository.findById(userId);
-        List<EventInteraction> interactions = interactionRepository.findByUserId(userId);
-        List<SearchQuery> searchQueries = searchQueryRepository.findByUserId(userId);
-
-        if (userOpt.isEmpty() || (interactions.isEmpty() && searchQueries.isEmpty())) {
-            return new UserPreferenceProfile(new HashMap<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
+        if (userOpt.isEmpty()) {
+            throw new NotFoundException("Usuario no encontrado.");
         }
 
         User user = userOpt.get();
+        List<EventInteraction> interactions = interactionRepository.findByUserId(userId);
+        List<SearchQuery> searchQueries = searchQueryRepository.findByUserId(userId);
+
+        if (interactions.isEmpty() && searchQueries.isEmpty()) {
+            return new UserPreferenceProfile(new HashMap<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
+        }
+
         Map<MusicGenre, Integer> genrePreferences = new HashMap<>();
         Set<String> likedEvents = new HashSet<>();
         Set<String> assistedEvents = new HashSet<>();
         Set<Long> preferredLocalidades = new HashSet<>();
 
-        // Include the user's primary localidad as a preferred localidad
+        // Incluir la localidad primaria del usuario como localidad preferida
         if (user.getLocalidad() != null) {
             preferredLocalidades.add(user.getLocalidad().getId());
         }
 
-        // Add preferred genres from the user's profile with a base weight
+        // Añadir los géneros preferidos del usuario con un peso base
         for (MusicGenre preferredGenre : user.getGenerosMusicalesPreferidos()) {
-            genrePreferences.put(preferredGenre, genrePreferences.getOrDefault(preferredGenre, 0) + 2); // Weight for user preferences
+            genrePreferences.put(preferredGenre, genrePreferences.getOrDefault(preferredGenre, 0) + 2);
         }
 
-        // Process interactions for genre and localidad preferences
+        // Procesar interacciones para preferencias de género y localidad
         for (EventInteraction interaction : interactions) {
             if (interaction.isLiked()) likedEvents.add(interaction.getEvent().getId().toString());
             if (interaction.isAssisted()) assistedEvents.add(interaction.getEvent().getId().toString());
@@ -67,7 +68,7 @@ public class RecommendationService {
             }
         }
 
-        // Process search queries for genre and localidad preferences
+        // Procesar consultas de búsqueda para preferencias de género y localidad
         for (SearchQuery search : searchQueries) {
             for (MusicGenre genre : search.getGenres()) {
                 genrePreferences.put(genre, genrePreferences.getOrDefault(genre, 0) + 1);
@@ -80,15 +81,15 @@ public class RecommendationService {
         return new UserPreferenceProfile(genrePreferences, likedEvents, assistedEvents, preferredLocalidades);
     }
 
-    // Recommend events based on user's profile, including localidad and preferred genres
+    // Recomienda eventos basados en el perfil del usuario, incluyendo localidad y géneros preferidos
     public List<Event> recommendEvents(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
         UserPreferenceProfile profile = buildUserProfile(userId);
 
-        // Combine interaction-based preferences with static user preferences
+        // Combina las preferencias basadas en interacciones con las preferencias estáticas del usuario
         Map<MusicGenre, Integer> genrePreferences = new HashMap<>(profile.getGenrePreferences());
         user.getGenerosMusicalesPreferidos().forEach(genre ->
-                genrePreferences.putIfAbsent(genre, 1) // Static preference with a lower score if no interactions exist
+                genrePreferences.putIfAbsent(genre, 1) // Preferencia estática con un puntaje bajo si no existen interacciones
         );
 
         Set<Long> preferredLocalidades = new HashSet<>(profile.getPreferredLocalidades());
@@ -109,9 +110,9 @@ public class RecommendationService {
                     int genreScore2 = genrePreferences.getOrDefault(e2.getGenres().get(0), 0);
 
                     boolean localidadPreference1 = e1.getLocalidad() != null && preferredLocalidades.contains(e1.getLocalidad().getId());
-                    boolean localidadPreference2 = e2.getLocalidad() != null && preferredLocalidades.contains(e2.getLocalidad().getId());
+                    boolean localidadPreference2 = e2.getLocalidad() != null && preferredLocalidades.contains(e1.getLocalidad().getId());
 
-                    // Prioritize by localidad preference, then by genre score
+                    // Prioriza por preferencia de localidad, luego por puntaje de género
                     if (localidadPreference1 && !localidadPreference2) return -1;
                     if (!localidadPreference1 && localidadPreference2) return 1;
                     return Integer.compare(genreScore2, genreScore1);
