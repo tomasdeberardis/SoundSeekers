@@ -48,7 +48,6 @@ public class UserService {
             user.setLastName(userDTO.getLastName());
             user.setUsername(userDTO.getUsername());
             user.setEdad(userDTO.getEdad());
-            user.setRole(Role.valueOf(userDTO.getRole()));
 
             Localidad localidad = localidadRepository.findById(userDTO.getLocalidadId())
                 .orElseThrow(() -> new RuntimeException("Localidad con ID " + userDTO.getLocalidadId()+" no existe"));
