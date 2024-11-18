@@ -54,26 +54,24 @@ public class EventController {
         return ResponseEntity.ok(eventService.deleteEvent(id));
     }
 
-    // Filtros avanzados
     @GetMapping("/filters")
-    public List<Event> getEventsByFilters(@RequestParam(required = false) String name,
-                                          @RequestParam(required = false) List<String> genres,
-                                          @RequestParam(required = false) LocalDateTime startDate,
-                                          @RequestParam(required = false) LocalDateTime endDate,
-                                          @RequestParam(required = false) Double minPrice,
-                                          @RequestParam(required = false) Double maxPrice) {
+    public List<Event> getEventsByFilters(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) List<String> genres,
+            @RequestParam(required = false) LocalDateTime startDate,
+            @RequestParam(required = false) LocalDateTime endDate,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Long localidadId) {
 
         List<MusicGenre> genreEnumList = null;
         if (genres != null) {
-            try {
-                genreEnumList = genres.stream()
-                                      .map(genre -> MusicGenre.valueOf(genre.toUpperCase())) 
-                                      .collect(Collectors.toList());
-            } catch (IllegalArgumentException e) {
-                throw new InvalidArgsException("Género musical no válido.");
-            }
+            genreEnumList = genres.stream()
+                    .map(genre -> MusicGenre.valueOf(genre.toUpperCase()))
+                    .collect(Collectors.toList());
         }
-        return eventService.getEventsByFilters(name, genreEnumList, startDate, endDate, minPrice, maxPrice);
+
+        return eventService.getEventsByFilters(name, genreEnumList, startDate, endDate, minPrice, maxPrice, localidadId);
     }
 
     // Búsqueda de eventos por proximidad (latitud, longitud, radio)

@@ -56,20 +56,15 @@ public class UserInteractionController {
         }
     }
 
-    // Endpoint for recording a search query
     @PostMapping("/{userId}/search")
     public ResponseEntity<MessageResponseDto> recordSearch(
-        @PathVariable Long userId,
-        @RequestParam(required = false) List<String> genres,
-        @RequestParam(required = false) Double minPrice,
-        @RequestParam(required = false) Double maxPrice,
-        @RequestParam(required = false) LocalDateTime startDateTime,
-        @RequestParam(required = false) LocalDateTime endDateTime) {
-
-        try {
-            return ResponseEntity.ok(userInteractionService.recordSearch(userId, genres, minPrice, maxPrice, startDateTime, endDateTime));
-        } catch (Exception e) {
-            throw new InvalidArgsException("Error al registrar la búsqueda.");
-        }
+            @PathVariable Long userId,
+            @RequestParam(required = false) List<String> genres,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) LocalDateTime startDateTime,
+            @RequestParam(required = false) LocalDateTime endDateTime,
+            @RequestParam(required = false) Long localidadId) { // Added localidadId
+        return ResponseEntity.ok(userInteractionService.recordSearch(userId, genres, minPrice, maxPrice, startDateTime, endDateTime, localidadId));
     }
 }

@@ -27,4 +27,8 @@ public class SearchQuery {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private LocalDateTime searchDate;
+    private Long localidadId;
+
+    public SearchQuery(User user, List<MusicGenre> genres, Double minPrice, Double maxPrice, LocalDateTime startDateTime, LocalDateTime endDateTime, LocalDateTime now, Long localidadId) {
+    }
 }

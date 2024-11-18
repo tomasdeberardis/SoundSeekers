@@ -48,7 +48,7 @@ public class EventDAOImpl implements EventDAO {
         }
     }
 
-    public List<Event> findByAdvancedFilters(String name, List<MusicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice) {
+    public List<Event> findByAdvancedFilters(String name, List<MusicGenre> genres, LocalDateTime startDate, LocalDateTime endDate, Double minPrice, Double maxPrice, Long localidadId) {
         StringBuilder queryBuilder = new StringBuilder("SELECT e FROM Event e WHERE 1=1 ");
 
         if (name != null) {
@@ -76,6 +76,9 @@ public class EventDAOImpl implements EventDAO {
             }
             queryBuilder.append(") ");
         }
+        if (localidadId != null) {
+            queryBuilder.append("AND e.localidad.id = :localidadId ");
+        }
 
         TypedQuery<Event> query = entityManager.createQuery(queryBuilder.toString(), Event.class);
 
@@ -98,6 +101,9 @@ public class EventDAOImpl implements EventDAO {
             for (int i = 0; i < genres.size(); i++) {
                 query.setParameter("genre" + i, genres.get(i));
             }
+        }
+        if (localidadId != null) {
+            query.setParameter("localidadId", localidadId);
         }
 
         return query.getResultList();
