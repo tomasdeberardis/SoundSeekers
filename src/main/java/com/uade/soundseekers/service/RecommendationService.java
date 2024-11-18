@@ -1,6 +1,7 @@
 package com.uade.soundseekers.service;
 
 import com.uade.soundseekers.entity.*;
+import com.uade.soundseekers.exception.NotFoundException;
 import com.uade.soundseekers.repository.EventDAOImpl;
 import com.uade.soundseekers.repository.EventInteractionRepository;
 import com.uade.soundseekers.repository.SearchQueryRepository;
@@ -29,7 +30,7 @@ public class RecommendationService {
 
         // Fallback: If no user data is found, return a default profile
         if (interactions.isEmpty() && searchQueries.isEmpty()) {
-            return new UserPreferenceProfile(new HashMap<>(), new HashSet<>(), new HashSet<>());
+            throw new NotFoundException("No se encontraron interacciones o búsquedas para el usuario con ID: " + userId);
         }
 
         Map<MusicGenre, Integer> genrePreferences = new HashMap<>();
@@ -63,6 +64,10 @@ public class RecommendationService {
 
         // Fetch all events and filter based on preferences
         List<Event> allEvents = eventRepository.findAll();
+        if (allEvents.isEmpty()) {
+            throw new NotFoundException("No se encontraron eventos disponibles.");
+        }
+
         List<Event> recommendedEvents = allEvents.stream()
                 .filter(event -> event.getGenres().stream().anyMatch(genrePreferences::containsKey))
                 .sorted(Comparator.comparingInt(event -> genrePreferences.getOrDefault(event.getGenres().get(0), 0)))
@@ -81,5 +86,4 @@ public class RecommendationService {
 
         return recommendedEvents;
     }
-
 }

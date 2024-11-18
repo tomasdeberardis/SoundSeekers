@@ -2,6 +2,10 @@ package com.uade.soundseekers.service;
 
 import com.uade.soundseekers.dto.MessageResponseDto;
 import com.uade.soundseekers.entity.*;
+import com.uade.soundseekers.exception.EventNotFoundException;
+import com.uade.soundseekers.exception.OrganizerNotFoundException;
+import com.uade.soundseekers.exception.InvalidGenreException;
+import com.uade.soundseekers.exception.LocalidadNotFoundException;
 import com.uade.soundseekers.repository.LocalidadRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,16 +52,22 @@ public class EventService {
             User organizer = optionalOrganizer.get();
             event.setOrganizer(organizer);
         } else {
-            throw new RuntimeException("Organizador no encontrado con el ID: " + eventDTO.getOrganizerId());
+            throw new OrganizerNotFoundException("Organizador no encontrado con el ID: " + eventDTO.getOrganizerId());
         }
 
         event.setGenres(eventDTO.getGenres().stream()
-            .map(genre -> MusicGenre.valueOf(genre.toUpperCase()))
+            .map(genre -> {
+                try {
+                    return MusicGenre.valueOf(genre.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidGenreException("Género Inválido: " + genre);
+                }
+            })
             .collect(Collectors.toList()));
 
         if (eventDTO.getLocalidadId() != null) {
             Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
-                    .orElseThrow(() -> new RuntimeException("Localidad con ID: " + eventDTO.getLocalidadId()+" no existe"));
+                    .orElseThrow(() -> new LocalidadNotFoundException("Localidad con ID: " + eventDTO.getLocalidadId() + " no existe"));
             event.setLocalidad(localidad);
         } else {
             event.setLocalidad(null);
@@ -70,24 +80,29 @@ public class EventService {
     // Editar un evento existente
     @Transactional
     public MessageResponseDto updateEvent(Long id, EventDTO eventDTO) {
-        Event event = eventDAO.findById(id).orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+        Event event = eventDAO.findById(id)
+            .orElseThrow(() -> new EventNotFoundException("Evento con ID: " + id + " no encontrado"));
+        
         event.setName(eventDTO.getName());
         event.setDescription(eventDTO.getDescription());
         event.setLatitude(eventDTO.getLatitude());
         event.setLongitude(eventDTO.getLongitude());
         event.setDateTime(eventDTO.getDateTime());
         event.setPrice(eventDTO.getPrice());
+        
         event.setGenres(eventDTO.getGenres().stream()
             .map(genre -> {
                 try {
                     return MusicGenre.valueOf(genre.toUpperCase());
                 } catch (IllegalArgumentException e) {
-                    throw new RuntimeException("Género Inválido: " + genre);
+                    throw new InvalidGenreException("Género Inválido: " + genre);
                 }
             })
             .collect(Collectors.toList()));
+        
         Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
-            .orElseThrow(() -> new RuntimeException("Localidad con ID: " + eventDTO.getLocalidadId()+" no existe"));
+            .orElseThrow(() -> new LocalidadNotFoundException("Localidad con ID: " + eventDTO.getLocalidadId() + " no existe"));
+        
         event.setLocalidad(localidad);
         eventDAO.update(event);
         return new MessageResponseDto("Evento actualizado exitosamente.");
@@ -96,9 +111,11 @@ public class EventService {
     // Eliminar un evento
     @Transactional
     public MessageResponseDto deleteEvent(Long id) {
+        Event event = eventDAO.findById(id)
+            .orElseThrow(() -> new EventNotFoundException("Evento con ID: " + id + " no encontrado"));
+        
         eventDAO.deleteById(id);
         return new MessageResponseDto("Evento eliminado exitosamente.");
-
     }
 
     // Filtros avanzados
@@ -134,11 +151,11 @@ public class EventService {
         }
     }
 
-
     //listado de eventos por artista
     @Transactional
     public List<Event> getEventsByArtistId(Long artistId) {
-    return eventDAO.findByArtistId(artistId);}
+        return eventDAO.findByArtistId(artistId);
+    }
 
     @Transactional
     public List<Event> getEventsByUserAttendance(Long userId) {
@@ -148,6 +165,5 @@ public class EventService {
     @Transactional
     public List<Event> getEventsByUserLikes(Long userId) {
         return eventDAO.findLikesByUserId(userId);
-
     }
-};
+}

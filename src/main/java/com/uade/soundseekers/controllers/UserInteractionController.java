@@ -1,6 +1,8 @@
 package com.uade.soundseekers.controllers;
 
 import com.uade.soundseekers.dto.MessageResponseDto;
+import com.uade.soundseekers.exception.NotFoundException; // Importa la excepción correspondiente
+import com.uade.soundseekers.exception.InvalidArgsException; // Importa la excepción correspondiente
 import com.uade.soundseekers.service.UserInteractionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,23 +21,39 @@ public class UserInteractionController {
     // Endpoint for recording a like on an event
     @PostMapping("/{userId}/events/{eventId}/like")
     public ResponseEntity<MessageResponseDto> recordLike(@PathVariable Long userId, @PathVariable Long eventId) {
-        return ResponseEntity.ok(userInteractionService.recordLike(userId, eventId));
+        try {
+            return ResponseEntity.ok(userInteractionService.recordLike(userId, eventId));
+        } catch (Exception e) {
+            throw new InvalidArgsException("Error al registrar el like para el evento.");
+        }
     }
 
     @DeleteMapping("/{userId}/events/{eventId}/like")
     public ResponseEntity<MessageResponseDto> deleteLike(@PathVariable Long userId, @PathVariable Long eventId) {
-        return ResponseEntity.ok(userInteractionService.toggleLike(userId, eventId));
+        try {
+            return ResponseEntity.ok(userInteractionService.toggleLike(userId, eventId));
+        } catch (Exception e) {
+            throw new NotFoundException("No se pudo eliminar el like para el evento.");
+        }
     }
 
     // Endpoint for recording an assist on an event
     @PostMapping("/{userId}/events/{eventId}/assist")
     public ResponseEntity<MessageResponseDto> recordAssist(@PathVariable Long userId, @PathVariable Long eventId) {
-        return ResponseEntity.ok(userInteractionService.recordAssist(userId, eventId));
+        try {
+            return ResponseEntity.ok(userInteractionService.recordAssist(userId, eventId));
+        } catch (Exception e) {
+            throw new InvalidArgsException("Error al registrar la asistencia al evento.");
+        }
     }
 
     @DeleteMapping("/{userId}/events/{eventId}/assist")
     public ResponseEntity<MessageResponseDto> deleteAssist(@PathVariable Long userId, @PathVariable Long eventId) {
-        return ResponseEntity.ok(userInteractionService.toggleAssist(userId, eventId));
+        try {
+            return ResponseEntity.ok(userInteractionService.toggleAssist(userId, eventId));
+        } catch (Exception e) {
+            throw new NotFoundException("No se pudo eliminar la asistencia para el evento.");
+        }
     }
 
     // Endpoint for recording a search query
@@ -47,6 +65,11 @@ public class UserInteractionController {
         @RequestParam(required = false) Double maxPrice,
         @RequestParam(required = false) LocalDateTime startDateTime,
         @RequestParam(required = false) LocalDateTime endDateTime) {
-        return ResponseEntity.ok(userInteractionService.recordSearch(userId, genres, minPrice, maxPrice, startDateTime, endDateTime));
+
+        try {
+            return ResponseEntity.ok(userInteractionService.recordSearch(userId, genres, minPrice, maxPrice, startDateTime, endDateTime));
+        } catch (Exception e) {
+            throw new InvalidArgsException("Error al registrar la búsqueda.");
+        }
     }
 }

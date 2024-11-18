@@ -180,7 +180,7 @@ public MessageResponseDto toggleAssist(Long userId, Long eventId) {
             User user = userOpt.get();
             List<MusicGenre> genres = genreStrings != null ? genreStrings.stream().map(MusicGenre::valueOf).collect(Collectors.toList()) : null;
 
-            SearchQuery searchQuery = new SearchQuery(user, genres, minPrice, maxPrice, startDateTime, endDateTime, LocalDateTime.now());
+            SearchQuery searchQuery = new SearchQuery(userId, user, genres, minPrice, maxPrice, startDateTime, endDateTime, LocalDateTime.now());
             searchQueryRepository.save(searchQuery);
         } else {
             throw new IllegalArgumentException("Usuario inválido");
