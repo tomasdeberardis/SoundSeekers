@@ -27,14 +27,15 @@ public class PasswordResetService {
     private final EmailService emailSender;
     private final PasswordEncoder passwordEncoder;
 
+    // Enviar el token para restablecer la contraseña
     public MessageResponseDto sendPasswordResetToken(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isEmpty()) {
-            throw new NotFoundException("No existe un usuario con ese email");
+            throw new NotFoundException("No existe un usuario con ese email.");
         }
         User user = optionalUser.get();
 
-        // Check and delete any existing token for the user
+        // Verificar y eliminar cualquier token existente
         VerificationToken existingToken = tokenRepository.findByUser(user);
         if (existingToken != null) {
             tokenRepository.delete(existingToken);
@@ -46,36 +47,49 @@ public class PasswordResetService {
         verificationToken.setUser(user);
         verificationToken.setExpiryDate(LocalDateTime.now().plusHours(24));
         tokenRepository.save(verificationToken);
+        
         try {
             emailSender.sendPasswordResetEmail(user.getEmail(), token);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Error al enviar el correo de verificación", e);
+        } catch (Exception e) {
+            throw new BadRequestException("Error al enviar el correo de verificación: " + e.getMessage());
         }
-        return new MessageResponseDto("El token para restablecer la contraseña se ha enviado correctamente");
+        
+        
+        return new MessageResponseDto("El token para restablecer la contraseña se ha enviado correctamente.");
     }
 
+    // Restablecer la contraseña
     public MessageResponseDto resetPassword(PasswordResetRequestDto request) {
         Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
         if (optionalUser.isEmpty()) {
-            throw new NotFoundException("No existe un usuario con ese email");
+            throw new NotFoundException("No existe un usuario con ese email.");
         }
 
         User user = optionalUser.get();
 
+        // Validar el token
         VerificationToken verificationToken = tokenRepository.findByUser(user);
-        if (!verificationToken.getToken().equals(request.getToken()) || verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new BadRequestException("Token inválido");
+        if (verificationToken == null || !verificationToken.getToken().equals(request.getToken()) || verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("Token inválido o expirado.");
         }
 
+        // Validar la nueva contraseña
         if (!isValidPassword(request.getPassword())) {
             throw new BadRequestException("La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.");
         }
 
+        // Actualizar la contraseña del usuario
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        userRepository.save(user);
-        return new MessageResponseDto("Contraseña restablecida correctamente");
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new BadRequestException("Error al guardar la nueva contraseña: " + e.getMessage());
+        }
+
+        return new MessageResponseDto("Contraseña restablecida correctamente.");
     }
 
+    // Método para validar la contraseña
     private boolean isValidPassword(String password) {
         String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$";
         Pattern pattern = Pattern.compile(PASSWORD_REGEX);
