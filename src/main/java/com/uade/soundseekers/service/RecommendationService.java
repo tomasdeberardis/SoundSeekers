@@ -111,6 +111,7 @@ public class RecommendationService {
                     if (!localidadPreference1 && localidadPreference2) return 1;
                     return Integer.compare(genreScore2, genreScore1);
                 })
+                .limit(5)
                 .collect(Collectors.toList());
 
         if (recommendedEvents.size() < 5) {
