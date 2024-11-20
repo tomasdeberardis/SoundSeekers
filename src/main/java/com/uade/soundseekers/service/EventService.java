@@ -2,10 +2,8 @@ package com.uade.soundseekers.service;
 
 import com.uade.soundseekers.dto.MessageResponseDto;
 import com.uade.soundseekers.entity.*;
-import com.uade.soundseekers.exception.EventNotFoundException;
-import com.uade.soundseekers.exception.OrganizerNotFoundException;
+import com.uade.soundseekers.exception.NotFoundException;
 import com.uade.soundseekers.exception.InvalidGenreException;
-import com.uade.soundseekers.exception.LocalidadNotFoundException;
 import com.uade.soundseekers.repository.LocalidadRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +50,7 @@ public class EventService {
             User organizer = optionalOrganizer.get();
             event.setOrganizer(organizer);
         } else {
-            throw new OrganizerNotFoundException("Organizador no encontrado con el ID: " + eventDTO.getOrganizerId());
+            throw new NotFoundException("Organizador no encontrado con el ID: " + eventDTO.getOrganizerId());
         }
 
         event.setGenres(eventDTO.getGenres().stream()
@@ -67,7 +65,7 @@ public class EventService {
 
         if (eventDTO.getLocalidadId() != null) {
             Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
-                    .orElseThrow(() -> new LocalidadNotFoundException("Localidad con ID: " + eventDTO.getLocalidadId() + " no existe"));
+                    .orElseThrow(() -> new NotFoundException("Localidad con ID: " + eventDTO.getLocalidadId() + " no existe"));
             event.setLocalidad(localidad);
         } else {
             event.setLocalidad(null);
@@ -81,7 +79,7 @@ public class EventService {
     @Transactional
     public MessageResponseDto updateEvent(Long id, EventDTO eventDTO) {
         Event event = eventDAO.findById(id)
-            .orElseThrow(() -> new EventNotFoundException("Evento con ID: " + id + " no encontrado"));
+            .orElseThrow(() -> new NotFoundException("Evento con ID: " + id + " no encontrado"));
         
         event.setName(eventDTO.getName());
         event.setDescription(eventDTO.getDescription());
@@ -101,7 +99,7 @@ public class EventService {
             .collect(Collectors.toList()));
         
         Localidad localidad = localidadRepository.findById(eventDTO.getLocalidadId())
-            .orElseThrow(() -> new LocalidadNotFoundException("Localidad con ID: " + eventDTO.getLocalidadId() + " no existe"));
+            .orElseThrow(() -> new NotFoundException("Localidad con ID: " + eventDTO.getLocalidadId() + " no existe"));
         
         event.setLocalidad(localidad);
         eventDAO.update(event);
@@ -111,9 +109,9 @@ public class EventService {
     // Eliminar un evento
     @Transactional
     public MessageResponseDto deleteEvent(Long id) {
-        Event event = eventDAO.findById(id)
-            .orElseThrow(() -> new EventNotFoundException("Evento con ID: " + id + " no encontrado"));
-        
+        eventDAO.findById(id)
+            .orElseThrow(() -> new NotFoundException("Evento con ID: " + id + " no encontrado"));
+
         eventDAO.deleteById(id);
         return new MessageResponseDto("Evento eliminado exitosamente.");
     }

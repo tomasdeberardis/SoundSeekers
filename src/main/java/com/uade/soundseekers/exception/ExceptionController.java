@@ -30,20 +30,6 @@ public class ExceptionController {
         return new ResponseEntity<>(exceptionDto, HttpStatus.BAD_REQUEST);
     }
 
-    // Maneja EventNotFoundException
-    @ExceptionHandler(EventNotFoundException.class)
-    public ResponseEntity<?> eventNotFound(EventNotFoundException e) {
-        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage());
-        return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
-    }
-
-    // Maneja OrganizerNotFoundException
-    @ExceptionHandler(OrganizerNotFoundException.class)
-    public ResponseEntity<?> organizerNotFound(OrganizerNotFoundException e) {
-        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage());
-        return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
-    }
-
     // Maneja InvalidGenreException
     @ExceptionHandler(InvalidGenreException.class)
     public ResponseEntity<?> invalidGenre(InvalidGenreException e) {
@@ -51,10 +37,4 @@ public class ExceptionController {
         return new ResponseEntity<>(exceptionDto, HttpStatus.BAD_REQUEST);
     }
 
-    // Maneja LocalidadNotFoundException
-    @ExceptionHandler(LocalidadNotFoundException.class)
-    public ResponseEntity<?> localidadNotFound(LocalidadNotFoundException e) {
-        ExceptionDto exceptionDto = new ExceptionDto(e.getMessage());
-        return new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND);
-    }
 }
