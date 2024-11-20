@@ -1,6 +1,6 @@
 package com.uade.soundseekers.service;
 
-import com.uade.soundseekers.dto.internals.LocalidadDTO;
+import com.uade.soundseekers.dto.LocalidadDTO;
 import com.uade.soundseekers.entity.Localidad;
 import com.uade.soundseekers.exception.NotFoundException;
 import com.uade.soundseekers.repository.LocalidadRepository;

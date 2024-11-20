@@ -1,14 +1,12 @@
 package com.uade.soundseekers.controllers;
 
 import com.uade.soundseekers.dto.UserDTO;
-import com.uade.soundseekers.entity.User;
-import com.uade.soundseekers.exception.NotFoundException; // Asegúrate de importar la excepción
-import com.uade.soundseekers.exception.InvalidArgsException; // Importa la excepción correspondiente
-import com.uade.soundseekers.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.uade.soundseekers.entity.User;
+import com.uade.soundseekers.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,11 +23,6 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
-
-        if (users.isEmpty()) {
-            throw new NotFoundException("No se encontraron usuarios.");
-        }
-
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -37,24 +30,16 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         Optional<User> user = userService.getUserById(id);
-
-        if (user.isEmpty()) {
-            throw new NotFoundException("Usuario no encontrado con ID: " + id);
-        }
-
-        return ResponseEntity.ok(user.get());
+        return user.map(ResponseEntity::ok)
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // Obtener un usuario por nombre de usuario
     @GetMapping("/username/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
         Optional<User> user = userService.getUserByUsername(username);
-
-        if (user.isEmpty()) {
-            throw new NotFoundException("Usuario no encontrado con el nombre de usuario: " + username);
-        }
-
-        return ResponseEntity.ok(user.get());
+        return user.map(ResponseEntity::ok)
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // Actualizar un usuario existente

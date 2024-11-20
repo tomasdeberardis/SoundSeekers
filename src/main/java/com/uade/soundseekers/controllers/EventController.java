@@ -55,7 +55,7 @@ public class EventController {
     }
 
     @GetMapping("/filters")
-public List<Event> getEventsByFilters(
+    public List<Event> getEventsByFilters(
         @RequestParam(required = false) String name,
         @RequestParam(required = false) List<String> genres,
         @RequestParam(required = false) LocalDateTime startDate,

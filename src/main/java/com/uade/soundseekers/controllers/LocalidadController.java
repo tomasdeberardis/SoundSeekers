@@ -1,6 +1,6 @@
 package com.uade.soundseekers.controllers;
 
-import com.uade.soundseekers.dto.internals.LocalidadDTO;
+import com.uade.soundseekers.dto.LocalidadDTO;
 import com.uade.soundseekers.service.LocalidadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

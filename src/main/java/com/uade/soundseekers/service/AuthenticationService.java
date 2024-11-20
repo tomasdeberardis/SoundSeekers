@@ -14,6 +14,7 @@ import com.uade.soundseekers.exception.NotFoundException;
 import com.uade.soundseekers.repository.LocalidadRepository;
 import com.uade.soundseekers.repository.UserRepository;
 import com.uade.soundseekers.repository.VerificationTokenRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -98,10 +99,9 @@ public class AuthenticationService {
         // Enviar el email de verificación
         try {
             emailSender.sendVerificationEmail(user.getEmail(), token);
-        } catch (Exception e) { // Captura cualquier tipo de excepción que pueda ocurrir
-            throw new BadRequestException("Error al enviar el correo de verificación", e);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Error al enviar el correo de verificación", e);
         }
-        
 
         return new MessageResponseDto("Usuario registrado con éxito. Se ha enviado un email de verificación a " + user.getEmail());
     }

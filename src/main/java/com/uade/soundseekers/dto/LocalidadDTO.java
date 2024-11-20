@@ -1,4 +1,4 @@
-package com.uade.soundseekers.dto.internals;
+package com.uade.soundseekers.dto;
 
 import lombok.Data;
 
