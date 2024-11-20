@@ -39,37 +39,42 @@ public class UserService {
 
     // Actualizar un usuario existente
     public MessageResponseDto updateUser(Long id, UserDTO userDTO) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.setEmail(userDTO.getEmail());
-            user.setName(userDTO.getName());
-            user.setPassword(userDTO.getPassword());
-            user.setLastName(userDTO.getLastName());
-            user.setUsername(userDTO.getUsername());
-            user.setEdad(userDTO.getEdad());
-
-            Localidad localidad = localidadRepository.findById(userDTO.getLocalidadId())
-                .orElseThrow(() -> new RuntimeException("Localidad con ID " + userDTO.getLocalidadId()+" no existe"));
-            user.setLocalidad(localidad);
-
-            List<MusicGenre> generosMusicales = userDTO.getGenres().stream()
-                .map(genre -> {
-                    try {
-                        return MusicGenre.valueOf(genre.toUpperCase());
-                    } catch (IllegalArgumentException e) {
-                        throw new RuntimeException("Género Inválido: " + genre);
-                    }
-                })
-                .collect(Collectors.toList());
-            user.setGenerosMusicalesPreferidos(generosMusicales);
-
-            userRepository.save(user);
-            return new MessageResponseDto("Usuario actualizado exitosamente.");
-        } else {
-            throw new RuntimeException("Usuario no encontrado con el ID: " + id);
-        }
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con el ID: " + id));
+    
+        // Actualizar solo los campos que deben cambiar
+        user.setEmail(userDTO.getEmail());
+        user.setName(userDTO.getName());
+        user.setLastName(userDTO.getLastName());
+        user.setUsername(userDTO.getUsername());
+        user.setEdad(userDTO.getEdad());
+    
+        // Mantener la contraseña existente, sin sobrescribir
+        // No hacemos nada con userDTO.getPassword()
+    
+        // Actualizar la localidad
+        Localidad localidad = localidadRepository.findById(userDTO.getLocalidadId())
+            .orElseThrow(() -> new RuntimeException("Localidad con ID " + userDTO.getLocalidadId() + " no existe"));
+        user.setLocalidad(localidad);
+    
+        // Actualizar géneros musicales preferidos
+        List<MusicGenre> generosMusicales = userDTO.getGenres().stream()
+            .map(genre -> {
+                try {
+                    return MusicGenre.valueOf(genre.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new RuntimeException("Género Inválido: " + genre);
+                }
+            })
+            .collect(Collectors.toList());
+        user.setGenerosMusicalesPreferidos(generosMusicales);
+    
+        // Guardar los cambios en el repositorio
+        userRepository.save(user);
+    
+        return new MessageResponseDto("Usuario actualizado exitosamente.");
     }
+    
 
     // Eliminar un usuario por ID
     public MessageResponseDto deleteUser(Long id) {
