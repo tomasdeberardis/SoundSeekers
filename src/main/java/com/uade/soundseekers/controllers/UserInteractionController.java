@@ -1,8 +1,8 @@
 package com.uade.soundseekers.controllers;
 
 import com.uade.soundseekers.dto.MessageResponseDto;
-import com.uade.soundseekers.exception.NotFoundException; // Importa la excepción correspondiente
-import com.uade.soundseekers.exception.InvalidArgsException; // Importa la excepción correspondiente
+import com.uade.soundseekers.exception.NotFoundException;
+import com.uade.soundseekers.exception.InvalidArgsException;
 import com.uade.soundseekers.service.UserInteractionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -68,13 +68,10 @@ public class UserInteractionController {
         try {
             return ResponseEntity.ok(userInteractionService.recordSearch(userId, genres, minPrice, maxPrice, startDateTime, endDateTime, localidadId));
         } catch (InvalidArgsException e) {
-            // Maneja error relacionado con parámetros inválidos
             throw new InvalidArgsException("Error en los parámetros de búsqueda.");
         } catch (NotFoundException e) {
-            // Maneja error si no se encuentra la búsqueda
             throw new NotFoundException("No se encontraron resultados para la búsqueda.");
         } catch (Exception e) {
-            // Captura cualquier otro error
             throw new RuntimeException("Error inesperado al registrar la búsqueda.");
         }
     }

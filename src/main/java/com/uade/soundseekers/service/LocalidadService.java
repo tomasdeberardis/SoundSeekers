@@ -1,5 +1,6 @@
 package com.uade.soundseekers.service;
 
+import com.uade.soundseekers.dto.internals.LocalidadDTO;
 import com.uade.soundseekers.entity.Localidad;
 import com.uade.soundseekers.exception.NotFoundException;
 import com.uade.soundseekers.repository.LocalidadRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LocalidadService {
@@ -16,12 +18,21 @@ public class LocalidadService {
     private LocalidadRepository localidadRepository;
 
     // Obtener todas las localidades
-    public List<Localidad> getAllLocalidades() {
+    public List<LocalidadDTO> getAllLocalidades() {
         List<Localidad> localidades = localidadRepository.findAll();
         if (localidades.isEmpty()) {
             throw new NotFoundException("No se encontraron localidades.");
         }
-        return localidades;
+        return localidades.stream()
+            .map(localidad -> {
+                LocalidadDTO dto = new LocalidadDTO();
+                dto.setId(localidad.getId());
+                dto.setNombre(localidad.getNombre());
+                dto.setLatitud(localidad.getLatitud());
+                dto.setLongitud(localidad.getLongitud());
+                return dto;
+            })
+            .collect(Collectors.toList());
     }
 
     // Guardar todas las localidades
