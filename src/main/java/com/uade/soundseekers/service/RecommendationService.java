@@ -88,8 +88,7 @@ public class RecommendationService {
 
         // Combina las preferencias basadas en interacciones con las preferencias estáticas del usuario
         Map<MusicGenre, Integer> genrePreferences = new HashMap<>(profile.getGenrePreferences());
-        user.getGenerosMusicalesPreferidos().forEach(genre ->
-                genrePreferences.putIfAbsent(genre, 1) // Preferencia estática con un puntaje bajo si no existen interacciones
+        user.getGenerosMusicalesPreferidos().forEach(genre -> genrePreferences.putIfAbsent(genre, 1) // Preferencia estática con un puntaje bajo si no existen interacciones
         );
 
         Set<Long> preferredLocalidades = new HashSet<>(profile.getPreferredLocalidades());
@@ -102,30 +101,22 @@ public class RecommendationService {
             throw new NotFoundException("No se encontraron eventos disponibles.");
         }
 
-        List<Event> recommendedEvents = allEvents.stream()
-                .filter(event -> event.getGenres().stream().anyMatch(genrePreferences::containsKey)
-                        || (event.getLocalidad() != null && preferredLocalidades.contains(event.getLocalidad().getId())))
-                .sorted((e1, e2) -> {
-                    int genreScore1 = genrePreferences.getOrDefault(e1.getGenres().get(0), 0);
-                    int genreScore2 = genrePreferences.getOrDefault(e2.getGenres().get(0), 0);
+        List<Event> recommendedEvents = allEvents.stream().filter(event -> event.getGenres().stream().anyMatch(genrePreferences::containsKey) || (event.getLocalidad() != null && preferredLocalidades.contains(event.getLocalidad().getId()))).sorted((e1, e2) -> {
+            int genreScore1 = genrePreferences.getOrDefault(e1.getGenres().get(0), 0);
+            int genreScore2 = genrePreferences.getOrDefault(e2.getGenres().get(0), 0);
 
-                    boolean localidadPreference1 = e1.getLocalidad() != null && preferredLocalidades.contains(e1.getLocalidad().getId());
-                    boolean localidadPreference2 = e2.getLocalidad() != null && preferredLocalidades.contains(e1.getLocalidad().getId());
+            boolean localidadPreference1 = e1.getLocalidad() != null && preferredLocalidades.contains(e1.getLocalidad().getId());
+            boolean localidadPreference2 = e2.getLocalidad() != null && preferredLocalidades.contains(e1.getLocalidad().getId());
 
-                    // Prioriza por preferencia de localidad, luego por puntaje de género
-                    if (localidadPreference1 && !localidadPreference2) return -1;
-                    if (!localidadPreference1 && localidadPreference2) return 1;
-                    return Integer.compare(genreScore2, genreScore1);
-                })
-                .limit(5)
-                .collect(Collectors.toList());
+            // Prioriza por preferencia de localidad, luego por puntaje de género
+            if (localidadPreference1 && !localidadPreference2) return -1;
+            if (!localidadPreference1 && localidadPreference2) return 1;
+            return Integer.compare(genreScore2, genreScore1);
+        }).limit(5).collect(Collectors.toList());
 
         if (recommendedEvents.size() < 5) {
             Set<Long> recommendedEventIds = recommendedEvents.stream().map(Event::getId).collect(Collectors.toSet());
-            List<Event> additionalEvents = allEvents.stream()
-                    .filter(event -> !recommendedEventIds.contains(event.getId()))
-                    .limit(5 - recommendedEvents.size())
-                    .toList();
+            List<Event> additionalEvents = allEvents.stream().filter(event -> !recommendedEventIds.contains(event.getId())).limit(5 - recommendedEvents.size()).toList();
             recommendedEvents.addAll(additionalEvents);
         }
 

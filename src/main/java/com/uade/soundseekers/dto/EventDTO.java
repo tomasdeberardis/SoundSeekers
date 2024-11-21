@@ -16,7 +16,7 @@ public class EventDTO {
     private LocalDateTime dateTime;
     private Double price;
     private List<String> genres;
-    private Long organizerId; // Solo el ID del organizador
-    private List<Long> imageIds; // Lista de IDs de imágenes, si se desea
+    private Long organizerId;
+    private List<Long> imageIds;
     private Long localidadId;
 }

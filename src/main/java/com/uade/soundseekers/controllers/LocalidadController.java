@@ -1,9 +1,9 @@
 package com.uade.soundseekers.controllers;
 
-import com.uade.soundseekers.entity.Localidad;
-import com.uade.soundseekers.exception.NotFoundException;
+import com.uade.soundseekers.dto.LocalidadDTO;
 import com.uade.soundseekers.service.LocalidadService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,18 +14,16 @@ import java.util.List;
 @RequestMapping("/api/localidad")
 public class LocalidadController {
 
+    private final LocalidadService localidadService;
+
     @Autowired
-    LocalidadService localidadService;
+    public LocalidadController(LocalidadService localidadService) {
+        this.localidadService = localidadService;
+    }
 
     @GetMapping
-    public List<Localidad> getAllLocalidades() {
-        List<Localidad> localidades = localidadService.getAllLocalidades();
-
-        // Si no se encuentran localidades, lanzamos una excepción
-        if (localidades == null || localidades.isEmpty()) {
-            throw new NotFoundException("No se encontraron localidades.");
-        }
-
-        return localidades;
+    public ResponseEntity<List<LocalidadDTO>> getAllLocalidades() {
+        return ResponseEntity.ok(localidadService.getAllLocalidades());
     }
+
 }

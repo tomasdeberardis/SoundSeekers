@@ -34,20 +34,20 @@ public class UserInteractionService {
     public MessageResponseDto recordLike(Long userId, Long eventId) {
         Optional<User> userOpt = userRepository.findById(userId);
         Optional<Event> eventOpt = eventRepository.findById(eventId);
-    
+
         if (userOpt.isPresent() && eventOpt.isPresent()) {
             User user = userOpt.get();
             Event event = eventOpt.get();
-    
+
             // Buscar la interacción existente
             Optional<EventInteraction> existingInteraction = interactionRepository.findByUserAndEvent(user, event);
-    
+
             if (existingInteraction.isPresent()) {
                 EventInteraction interaction = existingInteraction.get();
                 boolean newLikeStatus = !interaction.getLiked();
                 interaction.setLiked(newLikeStatus); // Cambiar el estado de like
                 interactionRepository.save(interaction);
-    
+
                 // Actualizar la lista de "likes" en Event
                 if (newLikeStatus) {
                     event.getLikes().add(user); // Añadir a la lista de likes si liked = true
@@ -58,50 +58,50 @@ public class UserInteractionService {
                 // Crear una nueva interacción si no existe
                 EventInteraction newInteraction = new EventInteraction(user, event, true, false, LocalDateTime.now());
                 interactionRepository.save(newInteraction);
-                
+
                 // Añadir a la lista de "likes" en Event
                 event.getLikes().add(user);
             }
-    
+
             // Guardar el evento con la lista de "likes" actualizada
             eventRepository.save(event);
         } else {
             throw new IllegalArgumentException("Usuario o evento inválido");
         }
-    
+
         return new MessageResponseDto("Like registrado exitosamente.");
     }
-    
+
 
     @Transactional
-public MessageResponseDto toggleLike(Long userId, Long eventId) {
-    Optional<User> userOpt = userRepository.findById(userId);
-    Optional<Event> eventOpt = eventRepository.findById(eventId);
+    public MessageResponseDto toggleLike(Long userId, Long eventId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
 
-    if (userOpt.isPresent() && eventOpt.isPresent()) {
-        User user = userOpt.get();
-        Event event = eventOpt.get();
+        if (userOpt.isPresent() && eventOpt.isPresent()) {
+            User user = userOpt.get();
+            Event event = eventOpt.get();
 
-        // Buscar la interacción existente
-        Optional<EventInteraction> interactionOpt = interactionRepository.findByUserAndEvent(user, event);
+            // Buscar la interacción existente
+            Optional<EventInteraction> interactionOpt = interactionRepository.findByUserAndEvent(user, event);
 
-        if (interactionOpt.isPresent()) {
-            EventInteraction interaction = interactionOpt.get();
-            interaction.setLiked(false); // Marcar "like" como falso
-            interactionRepository.save(interaction);
+            if (interactionOpt.isPresent()) {
+                EventInteraction interaction = interactionOpt.get();
+                interaction.setLiked(false); // Marcar "like" como falso
+                interactionRepository.save(interaction);
 
-            // Remover el usuario de la lista de "likes" del evento
-            event.getLikes().remove(user);
-            eventRepository.save(event);
+                // Remover el usuario de la lista de "likes" del evento
+                event.getLikes().remove(user);
+                eventRepository.save(event);
+            } else {
+                throw new IllegalArgumentException("No se encontró like para el usuario y el evento");
+            }
         } else {
-            throw new IllegalArgumentException("No se encontró like para el usuario y el evento");
+            throw new IllegalArgumentException("Usuario o evento inválido");
         }
-    } else {
-        throw new IllegalArgumentException("Usuario o evento inválido");
-    }
 
-    return new MessageResponseDto("Like eliminado exitosamente.");
-}
+        return new MessageResponseDto("Like eliminado exitosamente.");
+    }
 
 
     @Transactional
@@ -139,39 +139,37 @@ public MessageResponseDto toggleLike(Long userId, Long eventId) {
 
 
     @Transactional
-public MessageResponseDto toggleAssist(Long userId, Long eventId) {
-    Optional<User> userOpt = userRepository.findById(userId);
-    Optional<Event> eventOpt = eventRepository.findById(eventId);
+    public MessageResponseDto toggleAssist(Long userId, Long eventId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
 
-    if (userOpt.isPresent() && eventOpt.isPresent()) {
-        User user = userOpt.get();
-        Event event = eventOpt.get();
+        if (userOpt.isPresent() && eventOpt.isPresent()) {
+            User user = userOpt.get();
+            Event event = eventOpt.get();
 
-        // Buscar la interacción existente
-        Optional<EventInteraction> interactionOpt = interactionRepository.findByUserAndEvent(user, event);
+            // Buscar la interacción existente
+            Optional<EventInteraction> interactionOpt = interactionRepository.findByUserAndEvent(user, event);
 
-        if (interactionOpt.isPresent()) {
-            EventInteraction interaction = interactionOpt.get();
-            
-            // Cambiar el estado de asistencia y actualizar la interacción
-            interaction.setAssisted(false); // Marcar asistencia como false
-            interactionRepository.save(interaction);
-            
-            // Remover al usuario de la lista de asistentes del evento
-            event.getAttendees().remove(user);
-            eventRepository.save(event);
-            
+            if (interactionOpt.isPresent()) {
+                EventInteraction interaction = interactionOpt.get();
+
+                // Cambiar el estado de asistencia y actualizar la interacción
+                interaction.setAssisted(false); // Marcar asistencia como false
+                interactionRepository.save(interaction);
+
+                // Remover al usuario de la lista de asistentes del evento
+                event.getAttendees().remove(user);
+                eventRepository.save(event);
+
+            } else {
+                throw new IllegalArgumentException("No se encontró asistencia para el usuario y el evento");
+            }
         } else {
-            throw new IllegalArgumentException("No se encontró asistencia para el usuario y el evento");
+            throw new IllegalArgumentException("Usuario o evento inválido");
         }
-    } else {
-        throw new IllegalArgumentException("Usuario o evento inválido");
+
+        return new MessageResponseDto("Asistencia eliminada exitosamente.");
     }
-
-    return new MessageResponseDto("Asistencia eliminada exitosamente.");
-}
-
-
 
     public MessageResponseDto recordSearch(Long userId, List<String> genreStrings, Double minPrice, Double maxPrice, LocalDateTime startDateTime, LocalDateTime endDateTime, Long localidadId) {
         Optional<User> userOpt = userRepository.findById(userId);
