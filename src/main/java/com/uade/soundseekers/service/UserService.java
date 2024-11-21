@@ -3,6 +3,7 @@ import com.uade.soundseekers.dto.MessageResponseDto;
 import com.uade.soundseekers.dto.UserDTO;
 import com.uade.soundseekers.entity.Localidad;
 import com.uade.soundseekers.entity.MusicGenre;
+import com.uade.soundseekers.exception.BadRequestException;
 import com.uade.soundseekers.repository.LocalidadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,9 +42,22 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.setEmail(userDTO.getEmail());
+            if (userDTO.getName() == null || !userDTO.getName().matches("[a-zA-Z\\s]+") || userDTO.getName().trim().isEmpty()) {
+                throw new BadRequestException("El nombre no puede estar vacío y debe contener solo letras.");
+            }
             user.setName(userDTO.getName());
+
+            if (userDTO.getLastName() == null || !userDTO.getLastName().matches("[a-zA-Z\\s]+") || userDTO.getLastName().trim().isEmpty()) {
+                throw new BadRequestException("El apellido no puede estar vacío y debe contener solo letras.");
+            }
             user.setLastName(userDTO.getLastName());
+            
+            if (!user.getUsername().equals(userDTO.getUsername())) {
+                userRepository.findByUsername(userDTO.getUsername())
+                    .ifPresent(existingUser -> {
+                        throw new BadRequestException("El nombre de usuario ya está registrado.");
+                    });
+            }
             user.setUsername(userDTO.getUsername());
             user.setEdad(userDTO.getEdad());
 
