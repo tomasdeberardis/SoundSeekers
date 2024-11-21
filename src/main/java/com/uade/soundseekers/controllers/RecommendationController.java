@@ -12,8 +12,12 @@ import java.util.List;
 @RequestMapping("/api/recommendations")
 public class RecommendationController {
 
+    private final RecommendationService recommendationService;
+
     @Autowired
-    private RecommendationService recommendationService;
+    public RecommendationController(RecommendationService recommendationService) {
+        this.recommendationService = recommendationService;
+    }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Event>> recommendEventsForUser(@PathVariable Long userId) {

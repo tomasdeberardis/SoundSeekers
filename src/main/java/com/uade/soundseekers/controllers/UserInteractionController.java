@@ -1,6 +1,7 @@
 package com.uade.soundseekers.controllers;
 
 import com.uade.soundseekers.dto.MessageResponseDto;
+import com.uade.soundseekers.service.LocalidadService;
 import com.uade.soundseekers.service.UserInteractionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,12 @@ import java.util.List;
 @RequestMapping("/api/user-interactions")
 public class UserInteractionController {
 
+    private final UserInteractionService userInteractionService;
+
     @Autowired
-    private UserInteractionService userInteractionService;
+    public UserInteractionController(UserInteractionService userInteractionService) {
+        this.userInteractionService = userInteractionService;
+    }
 
     @PostMapping("/{userId}/events/{eventId}/like")
     public ResponseEntity<MessageResponseDto> recordLike(@PathVariable Long userId, @PathVariable Long eventId) {

@@ -16,8 +16,12 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://front-seminario.s3-website.us-east-2.amazonaws.com/")
 public class UserController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     // Obtener todos los usuarios
     @GetMapping

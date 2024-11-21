@@ -5,7 +5,7 @@ import com.uade.soundseekers.entity.Event;
 import com.uade.soundseekers.entity.Image;
 import com.uade.soundseekers.entity.MusicGenre;
 import com.uade.soundseekers.service.EventService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +16,14 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/events")
 @CrossOrigin(origins = "http://front-seminario.s3-website.us-east-2.amazonaws.com/")
-@RequiredArgsConstructor
 public class EventController {
 
     private final EventService eventService;
+
+    @Autowired
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     // Obtener todos los eventos
     @GetMapping

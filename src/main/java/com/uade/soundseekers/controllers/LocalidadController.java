@@ -14,8 +14,12 @@ import java.util.List;
 @RequestMapping("/api/localidad")
 public class LocalidadController {
 
+    private final LocalidadService localidadService;
+
     @Autowired
-    LocalidadService localidadService;
+    public LocalidadController(LocalidadService localidadService) {
+        this.localidadService = localidadService;
+    }
 
     @GetMapping
     public ResponseEntity<List<LocalidadDTO>> getAllLocalidades() {
