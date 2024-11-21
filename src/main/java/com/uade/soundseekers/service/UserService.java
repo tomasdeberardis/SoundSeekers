@@ -42,16 +42,16 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (userDTO.getName() == null || !userDTO.getName().matches("[a-zA-Z\\s]+") || userDTO.getName().trim().isEmpty()) {
+            if (userDTO.getName() == null || !userDTO.getName().matches("[\\p{L}\\s'-]+") || userDTO.getName().trim().isEmpty()) {
                 throw new BadRequestException("El nombre no puede estar vacío y debe contener solo letras.");
             }
             user.setName(userDTO.getName());
 
-            if (userDTO.getLastName() == null || !userDTO.getLastName().matches("[a-zA-Z\\s]+") || userDTO.getLastName().trim().isEmpty()) {
+            if (userDTO.getLastName() == null || !userDTO.getLastName().matches("[\\p{L}\\s'-]+") || userDTO.getLastName().trim().isEmpty()) {
                 throw new BadRequestException("El apellido no puede estar vacío y debe contener solo letras.");
             }
             user.setLastName(userDTO.getLastName());
-            
+
             if (!user.getUsername().equals(userDTO.getUsername())) {
                 userRepository.findByUsername(userDTO.getUsername())
                     .ifPresent(existingUser -> {
