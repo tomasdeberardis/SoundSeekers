@@ -7,9 +7,12 @@ import com.uade.soundseekers.exception.InvalidGenreException;
 import com.uade.soundseekers.repository.LocalidadRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import com.uade.soundseekers.dto.EventDTO;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -69,6 +72,27 @@ public class EventService {
             event.setLocalidad(localidad);
         } else {
             event.setLocalidad(null);
+        }
+
+        String genre = eventDTO.getGenres().getFirst().toUpperCase();
+        String imagePath = "images/" + genre + ".jpeg";
+
+        ClassPathResource resource = new ClassPathResource(imagePath);
+        byte[] imageData = null;
+        try {
+            imageData = Files.readAllBytes(resource.getFile().toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (imageData != null) {
+            Image imageEntity = new Image();
+            imageEntity.setPath(imagePath);
+            imageEntity.setImageName(genre + ".jpeg");
+            imageEntity.setImageData(imageData);
+            imageEntity.setEvent(event);
+
+            event.setImages(List.of(imageEntity));
         }
 
         eventDAO.save(event);

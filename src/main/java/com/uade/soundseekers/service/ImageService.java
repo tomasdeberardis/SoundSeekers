@@ -50,7 +50,7 @@ public class ImageService {
 
     // Guardar una nueva imagen
     public Image saveImage(Image image) {
-        if (image == null || image.imageName() == null || image.imageName().trim().isEmpty()) {
+        if (image == null || image.getImageName() == null || image.getImageName().trim().isEmpty()) {
             throw new BadRequestException("La imagen no tiene un nombre válido.");
         }
         try {
