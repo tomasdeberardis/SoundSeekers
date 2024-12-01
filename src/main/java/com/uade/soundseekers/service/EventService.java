@@ -88,8 +88,9 @@ public class EventService {
         if (imageData != null) {
             Image imageEntity = new Image();
             imageEntity.setPath(imagePath);
-            imageEntity.setImageName(genre + ".jpeg");
+            imageEntity.setImageName(genre);
             imageEntity.setImageData(imageData);
+            imageEntity.setDescription("Imagen de evento de género " + genre);
             imageEntity.setEvent(event);
 
             event.setImages(List.of(imageEntity));
