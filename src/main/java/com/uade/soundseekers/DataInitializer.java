@@ -100,7 +100,33 @@ public class DataInitializer implements CommandLineRunner {
         userRepository.saveAll(users);
 
         List<EventDTO> events = List.of(
-                createEventDTO("Concierto de Rock en Buenos Aires", "Una noche increíble de rock en vivo.", -34.603722, -58.381592, LocalDateTime.of(2024, 12, 10, 21, 0), 1500.0, List.of("ROCK"), users.get(0).getId(), localidades.get(0).getId()));
+            createEventDTO("Concierto de Rock en Buenos Aires", "Una noche increíble de rock en vivo.", -34.603722, -58.381592, LocalDateTime.of(2024, 12, 10, 21, 0), 1500.0, List.of("ROCK"), users.get(0).getId(), localidades.get(0).getId()),
+            createEventDTO("Festival de Jazz en Balvanera", "Jazz en Balvanera.", -34.6099, -58.4053, LocalDateTime.of(2024, 11, 5, 19, 0), 2000.0, List.of("JAZZ"), users.get(1).getId(), localidades.get(1).getId()),
+            createEventDTO("Fiesta de Cumbia en Barracas", "Cumbia en Barracas.", -34.6372, -58.3831, LocalDateTime.of(2024, 12, 20, 23, 0), 1000.0, List.of("CUMBIA"), users.get(2).getId(), localidades.get(2).getId()),
+            createEventDTO("Fiesta Electrónica en Belgrano", "Música electrónica en Belgrano.", -34.5612, -58.4585, LocalDateTime.of(2024, 10, 31, 22, 0), 3000.0, List.of("ELECTRONICA"), users.get(3).getId(), localidades.get(3).getId()),
+            createEventDTO("Reggae en Boedo", "Reggae en Boedo.", -34.6261, -58.4174, LocalDateTime.of(2024, 10, 25, 20, 0), 1800.0, List.of("REGGAE"), users.get(4).getId(), localidades.get(4).getId()),
+            createEventDTO("Hip Hop en Caballito", "Hip Hop en Caballito.", -34.6197, -58.4306, LocalDateTime.of(2024, 12, 15, 22, 0), 1200.0, List.of("HIP_HOP"), users.get(5).getId(), localidades.get(5).getId()),
+            createEventDTO("Punk Rock en Chacarita", "Punk Rock en Chacarita.", -34.5871, -58.4582, LocalDateTime.of(2024, 12, 12, 22, 0), 800.0, List.of("PUNK_ROCK"), users.get(6).getId(), localidades.get(6).getId()),
+            createEventDTO("Folk en Coghlan", "Folk en Coghlan.", -34.5617, -58.4684, LocalDateTime.of(2024, 12, 25, 18, 0), 1500.0, List.of("FOLKLORE"), users.get(7).getId(), localidades.get(7).getId()),
+            createEventDTO("Tango en Colegiales", "Tango en Colegiales.", -34.5743, -58.4497, LocalDateTime.of(2024, 12, 10, 19, 0), 1000.0, List.of("TANGO"), users.get(8).getId(), localidades.get(8).getId()),
+            createEventDTO("Reggaetón en Constitución", "Ritmos de reggaetón en Constitución.", -34.6284, -58.3859, LocalDateTime.of(2024, 12, 22, 23, 30), 1500.0, List.of("REGGAETON"), users.get(9).getId(), localidades.get(9).getId()),
+            createEventDTO("Festival de Salsa en Flores", "Disfruta de un festival de salsa en Flores.", -34.6345, -58.4675, LocalDateTime.of(2024, 11, 18, 20, 0), 1300.0, List.of("SALSA"), users.get(0).getId(), localidades.get(10).getId()),
+            createEventDTO("Blues en Floresta", "Noche de blues en Floresta.", -34.6297, -58.4912, LocalDateTime.of(2024, 12, 20, 19, 0), 1400.0, List.of("BLUES"), users.get(1).getId(), localidades.get(11).getId()),
+            createEventDTO("Pop en La Boca", "Concierto de pop en La Boca.", -34.6348, -58.3633, LocalDateTime.of(2024, 12, 10, 21, 0), 1500.0, List.of("POP"), users.get(2).getId(), localidades.get(12).getId()),
+            createEventDTO("Noche de Indie en La Paternal", "Indie en vivo en La Paternal.", -34.5969, -58.4642, LocalDateTime.of(2024, 10, 18, 21, 0), 900.0, List.of("INDIE"), users.get(3).getId(), localidades.get(13).getId()),
+            createEventDTO("Festival Alternativo en Liniers", "Un festival de sonidos alternativos.", -34.6425, -58.5201, LocalDateTime.of(2024, 12, 8, 19, 0), 1100.0, List.of("ALTERNATIVE"), users.get(4).getId(), localidades.get(14).getId()),
+            createEventDTO("Cuarteto en Mataderos", "Un clásico cuarteto en Mataderos.", -34.6629, -58.5088, LocalDateTime.of(2025, 1, 18, 22, 0), 1000.0, List.of("CUARTETO"), users.get(5).getId(), localidades.get(15).getId()),
+            createEventDTO("Jazz en Monte Castro", "Una noche de jazz en Monte Castro.", -34.6129, -58.4965, LocalDateTime.of(2025, 2, 10, 18, 0), 1500.0, List.of("JAZZ"), users.get(6).getId(), localidades.get(16).getId()),
+            createEventDTO("Rumba en Monserrat", "Rumba en Monserrat.", -34.6113, -58.3807, LocalDateTime.of(2024, 12, 20, 23, 0), 1000.0, List.of("RUMBA"), users.get(7).getId(), localidades.get(17).getId()),
+            createEventDTO("Rock en Nueva Pompeya", "Concierto de rock en Nueva Pompeya.", -34.6458, -58.4249, LocalDateTime.of(2025, 3, 5, 19, 0), 2000.0, List.of("ROCK"), users.get(8).getId(), localidades.get(18).getId()),
+            createEventDTO("Clásicos en Nuñez", "Concierto de música clásica en Nuñez.", -34.5463, -58.4544, LocalDateTime.of(2025, 2, 28, 18, 0), 1600.0, List.of("CLASICO"), users.get(9).getId(), localidades.get(19).getId()),
+            createEventDTO("Festival de Fusion en Palermo", "Una mezcla de ritmos en Palermo.", -34.5826, -58.4329, LocalDateTime.of(2025, 1, 28, 21, 0), 1700.0, List.of("FUSION"), users.get(0).getId(), localidades.get(20).getId()),
+            createEventDTO("Festival de Tango en Parque Avellaneda", "Disfruta del tango en Parque Avellaneda.", -34.6424, -58.4805, LocalDateTime.of(2025, 1, 18, 22, 0), 1000.0, List.of("TANGO"), users.get(1).getId(), localidades.get(21).getId()),
+            createEventDTO("Noche de Música Latina en Parque Chacabuco", "Música latina en Parque Chacabuco.", -34.6355, -58.4409, LocalDateTime.of(2025, 3, 5, 23, 0), 1500.0, List.of("SALSA"), users.get(2).getId(), localidades.get(22).getId()),
+            createEventDTO("Punk en Parque Chas", "Punk en vivo en Parque Chas.", -34.5891, -58.4827, LocalDateTime.of(2024, 12, 8, 22, 0), 1200.0, List.of("PUNK"), users.get(3).getId(), localidades.get(23).getId()),
+            createEventDTO("Folk Moderno en Parque Patricios", "Folk moderno en Parque Patricios.", -34.6352, -58.4024, LocalDateTime.of(2025, 4, 12, 20, 0), 1300.0, List.of("FOLKLORE_MODERNO"), users.get(4).getId(), localidades.get(24).getId()),
+            createEventDTO("Jazz en Puerto Madero", "Jazz en vivo en Puerto Madero.", -34.6091, -58.3628, LocalDateTime.of(2024, 12, 22, 20, 0), 1500.0, List.of("JAZZ"), users.get(5).getId(), localidades.get(25).getId())
+        );
 
         events.forEach(eventService::createEvent);
     }
