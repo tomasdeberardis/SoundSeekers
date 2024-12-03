@@ -1,6 +1,5 @@
 package com.uade.soundseekers.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -34,7 +33,6 @@ public class Event {
     private Double price;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private List<Image> images = new ArrayList<>();
 
     @ManyToMany
