@@ -20,7 +20,7 @@ public class SearchQuery {
     @ManyToOne
     private User user;
 
-    @ElementCollection
+
     private List<MusicGenre> genres;
     private Double minPrice;
     private Double maxPrice;
@@ -30,5 +30,13 @@ public class SearchQuery {
     private Long localidadId;
 
     public SearchQuery(User user, List<MusicGenre> genres, Double minPrice, Double maxPrice, LocalDateTime startDateTime, LocalDateTime endDateTime, LocalDateTime now, Long localidadId) {
+        this.user = user;
+        this.genres = genres;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.searchDate = now;
+        this.localidadId = localidadId;
     }
 }
