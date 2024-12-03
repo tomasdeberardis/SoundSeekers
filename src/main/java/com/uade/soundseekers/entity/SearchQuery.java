@@ -21,6 +21,7 @@ public class SearchQuery {
     private User user;
 
 
+    @ElementCollection
     private List<MusicGenre> genres;
     private Double minPrice;
     private Double maxPrice;
